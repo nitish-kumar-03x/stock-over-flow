@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Item Form - Inventory Management</title>
+  <link rel="stylesheet" href="../styles/main.css">
+  <script defer src="../scripts/item-form.js"></script>
+</head>
+<body>
+  <h1 id="form-title">Add/Edit Item</h1>
+  <nav>
+    <a href="dashboard.html">Dashboard</a> |
+    <a href="inventory.html">Inventory</a> |
+    <a href="users.html">Users</a> |
+    <a href="settings.html">Settings</a> |
+    <a href="login.html" id="logout-link">Logout</a>
+  </nav>
+  <form id="item-form">
+    <label>Name: <input type="text" name="name" required></label><br>
+    <label>Quantity: <input type="number" name="quantity" required></label><br>
+    <button type="submit">Save</button>
+  </form>
+</body>
+</html> 
