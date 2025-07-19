@@ -1,20 +1,504 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Register - Inventory Management</title>
-  <link rel="stylesheet" href="../styles/main.css">
-  <script defer src="../scripts/register.js"></script>
-</head>
-<body>
-  <h1>Register</h1>
-  <form id="register-form">
-    <label>Username: <input type="text" name="username" required></label><br>
-    <label>Password: <input type="password" name="password" required></label><br>
-    <button type="submit">Register</button>
-  </form>
-  <nav>
-    <a href="login.html">Login</a>
-  </nav>
-</body>
-</html> 
+  <head>
+    <meta charset="UTF-8" />
+    <title>Register - SOF</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+    <style>
+      body {
+        background: linear-gradient(120deg, #ffb22c 0%, #854836 100%);
+        min-height: 100vh;
+        margin: 0;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        padding: 0.7rem 2.5rem;
+        box-shadow: 0 2px 12px rgba(133, 72, 54, 0.08);
+        border-radius: 0 0 18px 18px;
+        margin-bottom: 2.5rem;
+      }
+      .navbar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .navbar-logo img {
+        height: 38px;
+        width: 38px;
+        border-radius: 8px;
+        background: #fff8ef;
+        box-shadow: 0 1px 4px rgba(133, 72, 54, 0.1);
+      }
+      .navbar-logo span {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #854836;
+        letter-spacing: 1px;
+      }
+      .navbar-links {
+        display: flex;
+        justify-content: end;
+        flex: 1;
+      }
+      .navbar-links a {
+        color: #854836;
+        font-weight: 500;
+        font-size: 1.1rem;
+        text-decoration: none;
+        padding: 0.4rem 1rem;
+        border-radius: 6px;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .navbar-links a:hover,
+      .navbar-links a:focus {
+        background: #ffb22c;
+        color: #000;
+        outline: none;
+      }
+      .navbar-user {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .navbar-user img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #ffb22c;
+        object-fit: cover;
+        border: 2px solid #854836;
+      }
+      .register-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+      }
+      .register-form-section {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.1);
+        padding: 2rem 2.5rem 1.5rem 2.5rem;
+        min-width: 350px;
+        max-width: 530px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 2.5px solid #ffb22c;
+      }
+      .register-form-section h1 {
+        color: #854836;
+        font-size: 2rem;
+        margin-bottom: 0.2rem;
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+        text-align: center;
+      }
+      .register-form-section p {
+        color: #ffb22c;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      .register-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .form-row {
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+        justify-content: center;
+      }
+      .form-row > label {
+        flex: 1 1 0;
+        max-width: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+      .register-form label {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-weight: 500;
+        color: #854836;
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+      }
+      .register-form input[type='text'],
+      .register-form input[type='password'],
+      .register-form input[type='email'],
+      .register-form input[type='number'],
+      .register-form select {
+        width: 100%;
+        padding: 0.7rem;
+        border: 1.5px solid #ffb22c;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+        margin-bottom: 1.2rem;
+        font-size: 1rem;
+        background: #fff8ef;
+        color: #000;
+        transition: border 0.2s;
+        text-align: center;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+      }
+      .register-form input:focus,
+      .register-form select:focus {
+        border: 2px solid #854836;
+        outline: none;
+      }
+      .register-form input[type='number']::-webkit-inner-spin-button,
+      .register-form input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      .register-form input[type='number'] {
+        -moz-appearance: textfield;
+      }
+      .form-actions {
+        display: flex;
+        gap: 1.2rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      .register-form button {
+        flex: 1;
+        background: #ffb22c;
+        color: #000;
+        border: none;
+        padding: 0.7rem 0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(133, 72, 54, 0.08);
+        transition:
+          background 0.2s,
+          color 0.2s;
+        max-width: 120px;
+      }
+      .register-form button.cancel {
+        background: #854836;
+        color: #fff;
+      }
+      .register-form button:hover,
+      .register-form button:focus {
+        background: #000;
+        color: #ffb22c;
+        outline: none;
+      }
+      @media (max-width: 700px) {
+        .form-row {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        .form-row > label {
+          max-width: 100%;
+        }
+      }
+    </style>
+    <script defer src="../scripts/api.js"></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <img src="../assets/logo.png" alt="StockOverFlow Logo" />
+        <span>StockOverFlow</span>
+      </div>
+      <div class="navbar-links">
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div class="navbar-user" id="navbar-user" style="display: none">
+        <img src="../assets/user-icon.png" alt="User" />
+      </div>
+    </nav>
+    <div class="register-container">
+      <div class="register-form-section">
+        <h1>Registration</h1>
+        <p>Join StockOverFlow to manage your inventory with ease!</p>
+        <form id="register-form" class="register-form">
+          <div class="form-row">
+            <label
+              >Name:
+              <input type="text" name="name" required />
+            </label>
+            <label
+              >Email:
+              <input type="email" name="email" required />
+            </label>
+          </div>
+          <div class="form-row">
+            <label
+              >Username:
+              <input type="text" name="username" required />
+            </label>
+            <label
+              >Phone:
+              <input
+                type="text"
+                name="phone"
+                required
+                maxlength="10"
+                pattern="[0-9]{10}"
+                title="Please enter a 10-digit phone number"
+              />
+            </label>
+          </div>
+          <div class="form-row">
+            <label
+              >Country:
+              <select name="country" id="country-select" required></select>
+            </label>
+            <label
+              >State/Town:
+              <select name="state_town" id="state-select" required></select>
+            </label>
+          </div>
+          <div class="form-row">
+            <label
+              >Password:
+              <input type="password" name="password" required />
+            </label>
+            <label
+              >Confirm Password:
+              <input type="password" name="confirm_password" required />
+            </label>
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              class="cancel"
+              onclick="window.location.href='login.html'"
+            >
+              Cancel
+            </button>
+            <button type="submit">Register</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="toast" style="display:none;position:fixed;top:32px;right:32px;z-index:9999;background:#ffb22c;color:#854836;padding:1.1rem 2.2rem;border-radius:8px;font-weight:600;box-shadow:0 2px 12px rgba(133,72,54,0.15);font-size:1.1rem;transition:opacity 0.3s;">
+      Toast
+    </div>
+    <script>
+      if (localStorage.getItem('userLoggedIn')) {
+        document.getElementById('navbar-user').style.display = 'flex';
+      }
+
+      const countries = {
+        India: [
+          'Andhra Pradesh',
+          'Arunachal Pradesh',
+          'Assam',
+          'Bihar',
+          'Chhattisgarh',
+          'Goa',
+          'Gujarat',
+          'Haryana',
+          'Himachal Pradesh',
+          'Jharkhand',
+          'Karnataka',
+          'Kerala',
+          'Madhya Pradesh',
+          'Maharashtra',
+          'Manipur',
+          'Meghalaya',
+          'Mizoram',
+          'Nagaland',
+          'Odisha',
+          'Punjab',
+          'Rajasthan',
+          'Sikkim',
+          'Tamil Nadu',
+          'Telangana',
+          'Tripura',
+          'Uttar Pradesh',
+          'Uttarakhand',
+          'West Bengal',
+
+          'Andaman and Nicobar Islands',
+          'Chandigarh',
+          'Dadra and Nagar Haveli and Daman and Diu',
+          'Delhi',
+          'Jammu and Kashmir',
+          'Ladakh',
+          'Lakshadweep',
+          'Puducherry',
+        ],
+        'United States': [
+          'Alabama',
+          'Alaska',
+          'Arizona',
+          'Arkansas',
+          'California',
+          'Colorado',
+          'Connecticut',
+          'Delaware',
+          'Florida',
+          'Georgia',
+          'Hawaii',
+          'Idaho',
+          'Illinois',
+          'Indiana',
+          'Iowa',
+          'Kansas',
+          'Kentucky',
+          'Louisiana',
+          'Maine',
+          'Maryland',
+          'Massachusetts',
+          'Michigan',
+          'Minnesota',
+          'Mississippi',
+          'Missouri',
+          'Montana',
+          'Nebraska',
+          'Nevada',
+          'New Hampshire',
+          'New Jersey',
+          'New Mexico',
+          'New York',
+          'North Carolina',
+          'North Dakota',
+          'Ohio',
+          'Oklahoma',
+          'Oregon',
+          'Pennsylvania',
+          'Rhode Island',
+          'South Carolina',
+          'South Dakota',
+          'Tennessee',
+          'Texas',
+          'Utah',
+          'Vermont',
+          'Virginia',
+          'Washington',
+          'West Virginia',
+          'Wisconsin',
+          'Wyoming',
+        ],
+        Australia: [
+          'New South Wales',
+          'Queensland',
+          'South Australia',
+          'Tasmania',
+          'Victoria',
+          'Western Australia',
+          'Australian Capital Territory',
+          'Northern Territory',
+        ],
+      };
+
+      const allCountries = ['India', 'United States', 'Australia'];
+      const countrySelect = document.getElementById('country-select');
+      const stateSelect = document.getElementById('state-select');
+
+      allCountries.forEach((c) => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        countrySelect.appendChild(opt);
+      });
+      countrySelect.value = 'India';
+
+      function populateStates(country) {
+        stateSelect.innerHTML = '';
+        const states = countries[country] || [];
+        if (states.length) {
+          states.forEach((s) => {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            stateSelect.appendChild(opt);
+          });
+        } else {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'N/A';
+          stateSelect.appendChild(opt);
+        }
+      }
+      populateStates('India');
+      countrySelect.addEventListener('change', (e) => {
+        populateStates(e.target.value);
+      });
+
+      document
+        .getElementById('register-form')
+        .addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const name = this.name.value;
+          const email = this.email.value;
+          const username = this.username.value;
+          const phone = this.phone.value;
+          const country = this.country.value;
+          const state_town = this.state_town.value;
+          const password = this.password.value;
+          const confirm_password = this.confirm_password.value;
+          const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+          if (!passwordRegex.test(password)) {
+            showToast('Password must be at least 8 characters and include uppercase, lowercase, number, and special character.', 'error');
+            return;
+          }
+          if (password !== confirm_password) {
+            showToast('Passwords do not match.', 'error');
+            return;
+          }
+          const result = await registerUser({
+            name,
+            email,
+            username,
+            phone,
+            country,
+            state_town,
+            password,
+            confirm_password,
+          });
+          if (result.status === 201) {
+            showToast('Registration successful! Please log in.');
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 1800);
+          } else {
+            showToast('Registration failed: ' + (result.message || 'Error'), 'error');
+          }
+        });
+
+      function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.background = type === 'error' ? '#d32f2f' : '#ffb22c';
+        toast.style.color = type === 'error' ? '#fff' : '#854836';
+        toast.style.display = 'block';
+        toast.style.opacity = '1';
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => {
+            toast.style.display = 'none';
+          }, 400);
+        }, 1800);
+      }
+    </script>
+  </body>
+</html>

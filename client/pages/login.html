@@ -1,22 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Login - Inventory Management</title>
-  <link rel="stylesheet" href="../styles/main.css">
-  <script defer src="../scripts/api.js"></script>
-  <script defer src="../scripts/login.js"></script>
-</head>
-<body>
-  <h1>Login</h1>
-  <form id="login-form">
-    <label>Username: <input type="text" name="username" required></label><br>
-    <label>Password: <input type="password" name="password" required></label><br>
-    <button type="submit">Login</button>
-  </form>
-  <nav>
-    <a href="login.html">Login</a> |
-    <a href="register.html">Register</a>
-  </nav>
-</body>
-</html> 
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login - SOF</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+    <style>
+      body {
+        background: linear-gradient(120deg, #ffb22c 0%, #854836 100%);
+        min-height: 100vh;
+        margin: 0;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        padding: 0.7rem 2.5rem;
+        box-shadow: 0 2px 12px rgba(133, 72, 54, 0.08);
+        border-radius: 0 0 18px 18px;
+        margin-bottom: 2.5rem;
+      }
+      .navbar-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .navbar-logo img {
+        height: 38px;
+        width: 38px;
+        border-radius: 8px;
+        background: #fff8ef;
+        box-shadow: 0 1px 4px rgba(133, 72, 54, 0.1);
+      }
+      .navbar-logo span {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #854836;
+        letter-spacing: 1px;
+      }
+      .navbar-links {
+        display: flex;
+        justify-content: end;
+        flex: 1;
+      }
+      .navbar-links a {
+        color: #854836;
+        font-weight: 500;
+        font-size: 1.1rem;
+        text-decoration: none;
+        padding: 0.4rem 1rem;
+        border-radius: 6px;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      .navbar-links a:hover,
+      .navbar-links a:focus {
+        background: #ffb22c;
+        color: #000;
+        outline: none;
+      }
+      .navbar-user {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .navbar-user img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #ffb22c;
+        object-fit: cover;
+        border: 2px solid #854836;
+      }
+      .login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+      }
+      .login-form-section {
+        background: #fff;
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.1);
+        padding: 2rem 2.5rem 1.5rem 2.5rem;
+        min-width: 350px;
+        max-width: 530px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 2.5px solid #ffb22c;
+      }
+      .login-form-section h1 {
+        color: #854836;
+        font-size: 2rem;
+        margin-bottom: 0.2rem;
+        background: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+        text-align: center;
+      }
+      .login-form-section p {
+        color: #ffb22c;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+      .login-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .login-form label {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-weight: 500;
+        color: #854836;
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+      }
+      .login-form input[type='text'],
+      .login-form input[type='password'] {
+        width: 90%;
+        padding: 0.7rem;
+        border: 1.5px solid #ffb22c;
+        border-radius: 8px;
+        margin-top: 0.3rem;
+        font-size: 1rem;
+        background: #fff8ef;
+        color: #000;
+        transition: border 0.2s;
+        text-align: center;
+      }
+      .login-form input:focus {
+        border: 2px solid #854836;
+        outline: none;
+      }
+      .form-actions {
+        display: flex;
+        gap: 1.2rem;
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+      .login-form button {
+        flex: 1;
+        background: #ffb22c;
+        color: #000;
+        border: none;
+        padding: 0.7rem 0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(133, 72, 54, 0.08);
+        transition:
+          background 0.2s,
+          color 0.2s;
+        max-width: 120px;
+      }
+      .login-form button.cancel {
+        background: #854836;
+        color: #fff;
+      }
+      .login-form button:hover,
+      .login-form button:focus {
+        background: #000;
+        color: #ffb22c;
+        outline: none;
+      }
+      @media (max-width: 600px) {
+        .login-form-section {
+          padding: 1.5rem 0.5rem;
+          min-width: unset;
+          max-width: 98vw;
+        }
+        .navbar {
+          flex-direction: column;
+          gap: 0.7rem;
+          padding: 0.7rem 1rem;
+        }
+        .navbar-links {
+          gap: 1.2rem;
+        }
+      }
+    </style>
+    <script defer src="../scripts/api.js"></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-logo">
+        <img src="../assets/logo.png" alt="StockOverFlow Logo" />
+        <span>StockOverFlow</span>
+      </div>
+      <div class="navbar-links">
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div class="navbar-user" id="navbar-user" style="display: none">
+        <img src="../assets/user-icon.png" alt="User" />
+      </div>
+    </nav>
+    <div class="login-container">
+      <div class="login-form-section">
+        <h1>Login</h1>
+        <p>Welcome back! Please login to your StockOverFlow account.</p>
+        <form id="login-form" class="login-form">
+          <label
+            >Username:
+            <input type="text" name="username" required />
+          </label>
+          <label
+            >Password:
+            <input type="password" name="password" required />
+          </label>
+          <div class="form-actions">
+            <button
+              type="button"
+              class="cancel"
+              onclick="window.location.href='register.html'"
+            >
+              Cancel
+            </button>
+            <button type="submit">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script>
+      // Show user icon if user is logged in (replace with real logic)
+      if (localStorage.getItem('stockoverflow')) {
+        document.getElementById('navbar-user').style.display = 'flex';
+      }
+    </script>
+  </body>
+</html>
