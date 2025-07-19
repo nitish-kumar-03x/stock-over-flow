@@ -24,5 +24,10 @@ async function registerUser({
       confirm_password,
     }),
   });
-  return res.json();
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
 }
