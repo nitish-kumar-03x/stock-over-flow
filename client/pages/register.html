@@ -299,10 +299,6 @@
       </div>
     </div>
     <script>
-      if (localStorage.getItem('userLoggedIn')) {
-        document.getElementById('navbar-user').style.display = 'flex';
-      }
-
       const countries = {
         India: [
           'Andhra Pradesh',
@@ -483,7 +479,7 @@
             }, 1800);
           } else {
             showToast(
-              'Registration failed: ' + (result.message || 'Error'),
+              'Registration failed: ' + (result.data?.message || 'Error'),
               'error'
             );
           }

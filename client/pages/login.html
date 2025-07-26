@@ -206,7 +206,7 @@
         <a href="login.html">Login</a>
       </div>
       <div class="navbar-user" id="navbar-user" style="display: none">
-        <img src="../assets/user-icon.png" alt="User" />
+        <img src="../assets/logo.png" alt="User" />
       </div>
     </nav>
     <div class="login-container">
@@ -215,8 +215,8 @@
         <p>Welcome back! Please login to your StockOverFlow account.</p>
         <form id="login-form" class="login-form">
           <label
-            >Username:
-            <input type="text" name="username" required />
+            >Email/Username:
+            <input type="text" name="unique" required />
           </label>
           <label
             >Password:
@@ -235,11 +235,31 @@
         </form>
       </div>
     </div>
+
     <script>
-      // Show user icon if user is logged in (replace with real logic)
-      if (localStorage.getItem('stockoverflow')) {
-        document.getElementById('navbar-user').style.display = 'flex';
-      }
+      document
+        .getElementById('login-form')
+        .addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const unique = this.unique.value;
+          const password = this.password.value;
+
+          const result = await loginUser({ unique, password });
+
+          if (result.status === 201) {
+            const token = result.data.data.token;
+            localStorage.setItem('stockOverFlow', token);
+            showToast('Login successful!');
+            setTimeout(() => {
+              window.location.href = 'dashboard.html';
+            }, 1800);
+          } else {
+            showToast(
+              'Login failed: ' + (result.data?.message || 'Error'),
+              'error'
+            );
+          }
+        });
     </script>
   </body>
 </html>

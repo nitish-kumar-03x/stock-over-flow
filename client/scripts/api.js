@@ -31,3 +31,21 @@ async function registerUser({
     data,
   };
 }
+
+async function loginUser({ unique, password }) {
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      unique,
+      password,
+    }),
+  });
+
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
+}
