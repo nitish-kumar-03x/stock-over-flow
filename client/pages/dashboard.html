@@ -1,30 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>Dashboard - SOF</title>
     <link rel="stylesheet" href="../styles/main.css" />
-    <style></style>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(120deg, #ffb22c 0%, #854836 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Arial, sans-serif;
+      }
+      .dashboard-container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 2.2rem 1rem;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
+      }
+      .dashboard-title {
+        color: #854836;
+        letter-spacing: 1px;
+        font-size: 2.2rem;
+        margin-bottom: 0.5rem;
+      }
+      .dashboard-welcome {
+        font-size: 1.17rem;
+        color: #ffb22c;
+        margin-bottom: 1.7rem;
+      }
+      .dashboard-summary {
+        display: flex;
+        gap: 2.3rem;
+        flex-wrap: wrap;
+        margin-bottom: 2.2rem;
+      }
+      .dashboard-card {
+        flex: 1 1 185px;
+        background: #fff8ef;
+        border-radius: 12px;
+        border: 2px solid #ffb22c;
+        box-shadow: 0 2px 10px rgba(133, 72, 54, 0.05);
+        padding: 1.25rem 1.2rem;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+      .dashboard-card-title {
+        color: #854836;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      .dashboard-card-value {
+        font-size: 1.5rem;
+        color: #ffb22c;
+        font-weight: bold;
+      }
+      @media (max-width: 900px) {
+        .dashboard-summary {
+          flex-direction: column;
+        }
+      }
+      @media (max-width: 600px) {
+        .dashboard-container {
+          padding: 1rem 0.2rem;
+        }
+      }
+    </style>
     <script defer src="../scripts/api.js"></script>
     <script defer src="../scripts/common.js"></script>
   </head>
   <body>
-    <nav>
-      <span
-        style="
-          font-weight: bold;
-          font-size: 1.3rem;
-          color: #fff;
-          margin-right: 2rem;
-          letter-spacing: 1px;
-        "
-        >StockOverFlow</span
-      >
-      <a href="dashboard.html">Dashboard</a>
-    </nav>
-    <h1>Dashboard</h1>
-    <div id="dashboard-content">
-      <p>Welcome to the Inventory Management Dashboard!</p>
+    <div id="navbar-private"></div>
+    <div class="dashboard-container">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <div class="dashboard-welcome">
+        Welcome to the Inventory Management Dashboard!
+      </div>
+      <div class="dashboard-summary" id="dashboard-summary">
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Total Products</div>
+          <div class="dashboard-card-value" id="products-count">--</div>
+        </div>
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Categories</div>
+          <div class="dashboard-card-value" id="categories-count">--</div>
+        </div>
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Suppliers</div>
+          <div class="dashboard-card-value" id="suppliers-count">--</div>
+        </div>
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Transactions</div>
+          <div class="dashboard-card-value" id="transactions-count">--</div>
+        </div>
+      </div>
+      <div>
+        <h2 style="color:#854836; margin-top:1.8rem;">Recent Activity</h2>
+        <ul style="color:#854836; opacity:0.92;">
+          <li>Sample: Added new product "Wireless Mouse".</li>
+          <li>Sample: Updated stock for "Lenovo Laptop".</li>
+        </ul>
+      </div>
     </div>
   </body>
 </html>

@@ -10,69 +10,7 @@
         min-height: 100vh;
         margin: 0;
       }
-      .navbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #fff;
-        padding: 0.7rem 2.5rem;
-        box-shadow: 0 2px 12px rgba(133, 72, 54, 0.08);
-        border-radius: 0 0 18px 18px;
-        margin-bottom: 2.5rem;
-      }
-      .navbar-logo {
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
-      }
-      .navbar-logo img {
-        height: 38px;
-        width: 38px;
-        border-radius: 8px;
-        background: #fff8ef;
-        box-shadow: 0 1px 4px rgba(133, 72, 54, 0.1);
-      }
-      .navbar-logo span {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #854836;
-        letter-spacing: 1px;
-      }
-      .navbar-links {
-        display: flex;
-        justify-content: end;
-        flex: 1;
-      }
-      .navbar-links a {
-        color: #854836;
-        font-weight: 500;
-        font-size: 1.1rem;
-        text-decoration: none;
-        padding: 0.4rem 1rem;
-        border-radius: 6px;
-        transition:
-          background 0.2s,
-          color 0.2s;
-      }
-      .navbar-links a:hover,
-      .navbar-links a:focus {
-        background: #ffb22c;
-        color: #000;
-        outline: none;
-      }
-      .navbar-user {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .navbar-user img {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: #ffb22c;
-        object-fit: cover;
-        border: 2px solid #854836;
-      }
+      
       .login-container {
         display: flex;
         align-items: center;
@@ -196,19 +134,7 @@
     <script defer src="../scripts/common.js"></script>
   </head>
   <body>
-    <nav class="navbar">
-      <div class="navbar-logo">
-        <img src="../assets/logo.png" alt="StockOverFlow Logo" />
-        <span>StockOverFlow</span>
-      </div>
-      <div class="navbar-links">
-        <a href="register.html">Register</a>
-        <a href="login.html">Login</a>
-      </div>
-      <div class="navbar-user" id="navbar-user" style="display: none">
-        <img src="../assets/logo.png" alt="User" />
-      </div>
-    </nav>
+    <div id="navbar-public"></div>
     <div class="login-container">
       <div class="login-form-section">
         <h1>Login</h1>

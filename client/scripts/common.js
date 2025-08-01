@@ -1,3 +1,50 @@
+// ------------------------------------------------------------
+// Navbar
+document.addEventListener('DOMContentLoaded', () => {
+  const navbarPlaceholder = document.getElementById('navbar-private');
+  if (navbarPlaceholder) {
+    const navFile = '../components/nav-private.html';
+
+    fetch(navFile)
+      .then((res) => res.text())
+      .then((data) => {
+        navbarPlaceholder.innerHTML = data;
+        setupLogoutHandler(); // works only if private nav is loaded
+      });
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const navbarPlaceholder = document.getElementById('navbar-public');
+  if (navbarPlaceholder) {
+    const navFile = '../components/nav-public.html';
+
+    fetch(navFile)
+      .then((res) => res.text())
+      .then((data) => {
+        navbarPlaceholder.innerHTML = data;
+      });
+  }
+});
+
+// ------------------------------------------------------------
+// Logout
+function setupLogoutHandler() {
+  const logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('stockOverFlow');
+      showToast('Logged out successfully!');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 500);
+    });
+  }
+}
+
+// ------------------------------------------------------------
+// Toast/Loader
 (function () {
   if (!document.getElementById('toast')) {
     const toastDiv = document.createElement('div');
@@ -8,7 +55,7 @@
     toastDiv.style.left = '50%';
     toastDiv.style.transform = 'translateX(-50%)';
     toastDiv.style.zIndex = '9999';
-    toastDiv.style.background = '#ffb22c';
+    toastDiv.style.background = 'rgba(255, 178, 44, 0.85)';
     toastDiv.style.color = '#854836';
     toastDiv.style.padding = '1.1rem 2.2rem';
     toastDiv.style.borderRadius = '8px';
@@ -17,11 +64,9 @@
     toastDiv.style.fontSize = '1.1rem';
     toastDiv.style.opacity = '0';
     toastDiv.style.pointerEvents = 'none';
-    toastDiv.style.transition =
-      'opacity 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1)';
+    toastDiv.style.transition = 'opacity 0.4s, transform 0.4s';
     toastDiv.style.transform += ' translateY(-20px)';
     toastDiv.style.backdropFilter = 'blur(8px)';
-    toastDiv.style.background = 'rgba(255, 178, 44, 0.85)'; // semi-transparent
     document.body.appendChild(toastDiv);
   }
 
@@ -35,13 +80,12 @@
     toast.style.display = 'block';
     toast.style.opacity = '0';
     toast.style.transform = 'translateX(-50%) translateY(-20px)';
-    // Animate in
     setTimeout(() => {
       toast.style.opacity = '1';
       toast.style.transform = 'translateX(-50%) translateY(0)';
     }, 10);
-    if (toastTimeout) clearTimeout(toastTimeout);
-    if (toastHideTimeout) clearTimeout(toastHideTimeout);
+    clearTimeout(toastTimeout);
+    clearTimeout(toastHideTimeout);
     toastTimeout = setTimeout(() => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateX(-50%) translateY(-20px)';

@@ -5,6 +5,13 @@ body {
   background: #fff8ef;
   color: #000000;
 }
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(120deg, #ffb22c 0%, #854836 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
 h1 {
   background: #ffb22c;
   color: #000000;
@@ -47,7 +54,7 @@ nav a:focus {
 form {
   background: #fff;
   padding: 2rem 2.5rem;
-  margin: 2rem auto;
+  /* margin: 2rem auto; */
   max-width: 420px;
   border-radius: 18px;
   box-shadow: 0 4px 24px rgba(133, 72, 54, 0.1);
@@ -141,4 +148,66 @@ table tr:hover {
 ::-webkit-scrollbar-thumb {
   background: #854836;
   border-radius: 8px;
+}
+
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(133, 72, 54, 0.06);
+  padding: 0.7rem 2.5rem;
+  border-radius: 0 0 18px 18px;
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.navbar-logo img {
+  height: 38px;
+  width: 38px;
+  border-radius: 8px;
+  background: #fff8ef;
+  box-shadow: 0 1px 4px rgba(133, 72, 54, 0.1);
+}
+
+.navbar-logo span {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #854836;
+  letter-spacing: 1px;
+}
+
+.navbar-links,
+.nav-links {
+  display: flex;
+  /* gap: 1rem; */
+}
+
+.navbar-links a,
+.nav-links a {
+  color: #854836;
+  font-weight: 500;
+  font-size: 1.1rem;
+  text-decoration: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-links a:hover,
+.navbar-links a:focus,
+.nav-links a:hover,
+.nav-links a.active {
+  background: #ffb22c;
+  color: #000;
+  outline: none;
 }
