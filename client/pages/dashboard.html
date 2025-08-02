@@ -8,7 +8,7 @@
       body {
         margin: 0;
         padding: 0;
-        background: linear-gradient(120deg, #ffb22c 0%, #854836 100%);
+        /* background: linear-gradient(120deg, #ffb22c 0%, #854836 100%); */
         min-height: 100vh;
         font-family: 'Segoe UI', Arial, sans-serif;
       }
@@ -19,13 +19,6 @@
         background: #fff;
         border-radius: 20px;
         box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
-      }
-      .dashboard-title {
-        /* color: #854836; */
-        color: #fff;
-        letter-spacing: 1px;
-        font-size: 2.2rem;
-        margin-bottom: 0.5rem;
       }
       .dashboard-welcome {
         font-size: 1.17rem;
@@ -68,23 +61,6 @@
           padding: 1rem 0.2rem;
         }
       }
-      .s-nav{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0px 15px;
-      }
-      .s-nav img{
-          height: 38px;
-   width: 38px;
-  border-radius: 8px;
-  background: #fff8ef;
-  box-shadow: 0 1px 4px rgba(133, 72, 54, 0.1);
-  margin-left: 15px;
-      }
-      .d-content{
-        padding: 0px 20px;
-      }
     </style>
     <script defer src="../scripts/api.js"></script>
     <script defer src="../scripts/common.js"></script>
@@ -93,46 +69,45 @@
     <div id="navbar-private"></div>
     <div class="s-nav">
       <div>
-        <h1 class="dashboard-title">Dashboard</h1>
+        <h1 class="s-nav-title">Dashboard</h1>
       </div>
       <div>
-        <span>State, </span>
-        <span>Country</span>
+        <span>Uttar Pradesh, </span>
+        <span>India</span>
       </div>
       <div class="d-flex align-center">
-        <h6>Name</h6>
-        <img src="../assets/logo.png" alt="userImg" />
+        <h5>Khushi Chaudhary</h5>
+        <img src="../assets/user-icon.jpg" alt="userImg" />
       </div>
     </div>
-    <div class="d-content">
-        <div class="dashboard-welcome">
-      Welcome to the Inventory Management Dashboard!
-    </div>
-    <div class="dashboard-summary" id="dashboard-summary">
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">Total Products</div>
-        <div class="dashboard-card-value" id="products-count">--</div>
+    <div class="b-content">
+      <div class="dashboard-summary" id="dashboard-summary">
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Total Products</div>
+          <div class="dashboard-card-value" id="products-count">20</div>
+        </div>
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Categories</div>
+          <div class="dashboard-card-value" id="categories-count">07</div>
+        </div>
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Orders</div>
+          <div class="dashboard-card-value" id="suppliers-count">456</div>
+        </div>
+        <div class="dashboard-card">
+          <div class="dashboard-card-title">Transactions</div>
+          <div class="dashboard-card-value" id="transactions-count">230</div>
+        </div>
       </div>
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">Categories</div>
-        <div class="dashboard-card-value" id="categories-count">--</div>
+      <div>
+        <h2 style="color: #854836; margin-top: 1.8rem">Recent Activity</h2>
+        <ul style="color: #854836; opacity: 0.92">
+          <li>Sample: Added new product "Wireless Mouse".</li>
+          <li>Sample: Updated stock for "Lenovo Laptop".</li>
+          <li>Sample: Added new product "Wireless Mouse".</li>
+          <li>Sample: Updated stock for "Lenovo Laptop".</li>
+        </ul>
       </div>
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">Suppliers</div>
-        <div class="dashboard-card-value" id="suppliers-count">--</div>
-      </div>
-      <div class="dashboard-card">
-        <div class="dashboard-card-title">Transactions</div>
-        <div class="dashboard-card-value" id="transactions-count">--</div>
-      </div>
-    </div>
-    <div>
-      <h2 style="color: #854836; margin-top: 1.8rem">Recent Activity</h2>
-      <ul style="color: #854836; opacity: 0.92">
-        <li>Sample: Added new product "Wireless Mouse".</li>
-        <li>Sample: Updated stock for "Lenovo Laptop".</li>
-      </ul>
-    </div>
     </div>
   </body>
 </html>
