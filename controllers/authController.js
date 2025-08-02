@@ -128,7 +128,6 @@ const login = async (req, res) => {
     });
 
     if (token) {
-      console.log(token);
       return res.status(201).json({
         success: true,
         message: 'User login successfully',
@@ -146,4 +145,44 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const getUser = async (req, res) => {
+  try {
+    const userEmail = req.userEmail;
+
+    if (!userEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'User email is missing in the request.',
+      });
+    }
+
+    const user = await userCollection.findOne(
+      { email: userEmail },
+      { password: 0 }
+    );
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'User fetched successfully.',
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { register, login, getUser };
