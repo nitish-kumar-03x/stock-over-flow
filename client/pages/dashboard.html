@@ -72,11 +72,13 @@
         <h1 class="s-nav-title">Dashboard</h1>
       </div>
       <div>
-        <span>Uttar Pradesh, </span>
-        <span>India</span>
+        <span id="userState">State </span>
+        <span>,</span>
+        <span id="userCountry">Country</span>
       </div>
       <div class="d-flex align-center">
-        <h5>Khushi Chaudhary</h5>
+        <h5>Welcome &nbsp;</h5>
+        <h3 id="userTitle">User</h3>
         <img src="../assets/user-icon.jpg" alt="userImg" />
       </div>
     </div>
@@ -109,5 +111,19 @@
         </ul>
       </div>
     </div>
+    <script>
+      async function fetchUser() {
+        const result = await getUser();
+        document.getElementById('userTitle').innerHTML =
+          result.data.data.user.name;
+        document.getElementById('userState').innerHTML =
+          result.data.data.user.state_town;
+        document.getElementById('userCountry').innerHTML =
+          result.data.data.user.country;
+      }
+      document.addEventListener('DOMContentLoaded', () => {
+        fetchUser();
+      });
+    </script>
   </body>
 </html>

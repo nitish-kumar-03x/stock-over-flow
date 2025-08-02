@@ -49,3 +49,20 @@ async function loginUser({ unique, password }) {
     data,
   };
 }
+
+async function getUser() {
+  const token = localStorage.getItem('stockOverFlow');  
+  const res = await fetch(`${API_BASE}/auth/get-user`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  });
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
+}

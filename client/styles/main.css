@@ -5,7 +5,6 @@
   main-white-color:#ffffff;
 } */
 
-
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
   margin: 0;
@@ -239,7 +238,9 @@ table tr:hover {
   padding: 15px 15px;
 }
 .s-nav span,
-.s-nav h5 {
+.s-nav h4,
+.s-nav h5,
+.s-nav h3 {
   color: #854836;
 }
 .s-nav-title {
