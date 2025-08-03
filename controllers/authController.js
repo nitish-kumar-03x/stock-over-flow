@@ -1,6 +1,7 @@
 const userCollection = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const authLogAction = require('../helper/logs');
 require('dotenv').config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -76,6 +77,7 @@ const register = async (req, res) => {
 
     const isSaved = await newUser.save();
     if (isSaved) {
+      authLogAction(email, 'User', 'Register', 'New user registered');
       return res.status(201).json({
         success: true,
         message: 'User registered successfully.',
@@ -126,6 +128,8 @@ const login = async (req, res) => {
     const token = jwt.sign({ email: user.email }, SECRET_KEY, {
       expiresIn: '7d',
     });
+
+    authLogAction(user.email, 'User', 'Login', 'User logged in');
 
     if (token) {
       return res.status(201).json({
@@ -185,4 +189,47 @@ const getUser = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getUser };
+const updateUser = async (req, res) => {
+  try {
+    const { name, email, username, phone, country, state_town } = req.body;
+
+    if (!name || !email || !username || !phone || !country || !state_town) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required.',
+      });
+    }
+
+    const user = await userCollection.findOne({ email: req.userEmail });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+
+    user.name = name;
+    user.username = username;
+    user.phone = phone;
+    user.country = country;
+    user.state_town = state_town;
+
+    await user.save();
+
+    authLogAction(user.email, 'User', 'Update', 'User profile updated');
+
+    return res.status(201).json({
+      success: true,
+      message: 'User updated successfully.',
+      data: {},
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { register, login, getUser, updateUser };

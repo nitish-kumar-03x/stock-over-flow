@@ -51,13 +51,45 @@ async function loginUser({ unique, password }) {
 }
 
 async function getUser() {
-  const token = localStorage.getItem('stockOverFlow');  
+  const token = localStorage.getItem('stockOverFlow');
   const res = await fetch(`${API_BASE}/auth/get-user`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       token: token,
     },
+  });
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
+}
+
+async function updateUser({
+  name,
+  email,
+  username,
+  phone,
+  country,
+  state_town,
+}) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/auth/update-user`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+    body: JSON.stringify({
+      name,
+      email,
+      username,
+      phone,
+      country,
+      state_town,
+    }),
   });
   const data = await res.json();
 
