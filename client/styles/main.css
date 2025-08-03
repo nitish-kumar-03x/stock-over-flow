@@ -222,7 +222,7 @@ table tr:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 7px 15px;
+  padding: 0px 15px;
   border-bottom: 1px solid #ffb22c;
 }
 .s-nav img {
@@ -248,4 +248,10 @@ table tr:hover {
   letter-spacing: 1px;
   font-size: 2rem;
   margin-bottom: 0.5rem;
+}
+
+#userTitle {
+  letter-spacing: 0.1rem;
+  font-size: 1.3rem;
+  margin: 0;
 }
