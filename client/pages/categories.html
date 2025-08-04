@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>category - SOF</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Arial, sans-serif;
+      }
+
+      .category-container {
+        /* max-width: 1300px; */
+        margin: 0 auto;
+        padding: 0rem 1rem;
+        /* background: #fff; */
+        border-radius: 9px;
+        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
+      }
+
+      .add-category-btn {
+        margin-top: 20px;
+        margin-left: 20px;
+        background-color: #ffb22c;
+        color: #000;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #ffb22c;
+        color: white;
+      }
+
+      td {
+        font-size: 1rem;
+        color: #854836;
+      }
+
+      .icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        margin: 0 5px;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+      }
+
+      .modal {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal h3 {
+        margin-top: 0;
+        color: #854836;
+      }
+
+      .modal input {
+        width: 100%;
+        padding: 0.6rem;
+        margin-top: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+        gap: 1rem;
+      }
+
+      .modal-buttons button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .modal-buttons .cancel-btn {
+        background: #ccc;
+      }
+
+      .modal-buttons .submit-btn {
+        background: #ffb22c;
+        color: white;
+      }
+
+      @media (max-width: 600px) {
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+
+        tr {
+          margin-bottom: 1rem;
+        }
+
+        th {
+          text-align: left;
+        }
+      }
+
+      .add-c-b-wrapper {
+        justify-content: end;
+        padding: 0px 3rem;
+      }
+    </style>
+    <script defer src="../scripts/api.js"></script>
+    <script defer src="../scripts/common.js"></script>
+  </head>
+
+  <body>
+    <div id="navbar-private"></div>
+    <div class="d-flex add-c-b-wrapper">
+      <button class="add-category-btn" onclick="openModal('add')">
+        Add New
+      </button>
+    </div>
+
+    <div class="category-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 10%">S.No</th>
+            <th style="width: 70%">Category</th>
+            <th style="width: 20%">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="category-table-body">
+          <!-- Rows will be injected here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none">
+      <div class="modal">
+        <h3 id="modal-title">Add New Category</h3>
+        <input
+          type="text"
+          id="category-name-input"
+          placeholder="Enter category name"
+        />
+        <div class="modal-buttons">
+          <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+          <button class="submit-btn" onclick="submitCategory()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const categories = [];
+      const tableBody = document.getElementById('category-table-body');
+      const modalOverlay = document.getElementById('modal-overlay');
+      const categoryInput = document.getElementById('category-name-input');
+      const modalTitle = document.getElementById('modal-title');
+
+      let modalMode = 'add'; // 'add' or 'edit'
+      let editIndex = null;
+
+      async function renderTable() {
+        tableBody.innerHTML = '';
+
+        const result = await getCategories();
+
+        if (
+          result.status === 201 &&
+          Array.isArray(result.data?.data?.categories)
+        ) {
+          categories.length = 0; // clear existing
+          categories.push(...result.data.data.categories); // update
+        }
+
+        if (categories.length === 0) {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+      <td colspan="3" style="color: #999; text-align:center; font-style: italic;">
+        No Categories Added Right Now.
+      </td>`;
+          tableBody.appendChild(row);
+          return;
+        }
+
+        categories.forEach((cat, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${cat.name}</td>
+      <td>
+        <button class="icon-btn" onclick="openModal('edit', ${index})">✏️</button>
+        <button class="icon-btn" onclick="deleteCategory(${index})">🗑️</button>
+      </td>
+    `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      function openModal(mode, index = null) {
+        modalMode = mode;
+        editIndex = index;
+
+        if (mode === 'add') {
+          modalTitle.textContent = 'Add New Category';
+          categoryInput.value = '';
+        } else if (mode === 'edit') {
+          modalTitle.textContent = 'Edit Category';
+          categoryInput.value = categories[index].name;
+        }
+
+        modalOverlay.style.display = 'flex';
+        categoryInput.focus();
+      }
+
+      function closeModal() {
+        modalOverlay.style.display = 'none';
+        categoryInput.value = '';
+        editIndex = null;
+      }
+
+      async function submitCategory() {
+        const name = categoryInput.value.trim();
+        if (!name) return alert('Category name is required.');
+
+        if (modalMode === 'add') {
+          const result = await addCategory(name);
+          if (result.status == 201) {
+            showToast('Category Added');
+            renderTable();
+            closeModal();
+          } else {
+            showToast(
+              'Category Added failed: ' + (result.data?.message || 'Error'),
+              'error'
+            );
+          }
+        } else if (modalMode === 'edit' && editIndex !== null) {
+          categories[editIndex].name = name;
+          renderTable();
+          closeModal();
+        }
+      }
+
+      function deleteCategory(index) {
+        if (confirm('Are you sure you want to delete this category?')) {
+          categories.splice(index, 1);
+          renderTable();
+        }
+      }
+
+      // Initial render
+      document.addEventListener('DOMContentLoaded', () => {
+        renderTable();
+      });
+    </script>
+  </body>
+</html>

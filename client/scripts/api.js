@@ -98,3 +98,39 @@ async function updateUser({
     data,
   };
 }
+
+async function addCategory(name) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/category/add-category`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+    body: JSON.stringify({
+      name,
+    }),
+  });
+  const data = await res.json();
+  return {
+    status: res.status,
+    data,
+  };
+}
+
+async function getCategories() {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/category/get-categories`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  });
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
+}

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const authRouter = require('./routes/authRoute');
+const categoryRouter = require('./routes/categoryRoute');
 require('dotenv').config();
 
 const connectMongoDB = require('./config/mongodb');
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to Backend');
 });
 app.use('/api/auth', authRouter);
+app.use('/api/category', categoryRouter);
 
 // Connect to MongoDB and start server
 connectMongoDB()
