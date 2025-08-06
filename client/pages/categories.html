@@ -230,7 +230,7 @@
       <td>${cat.name}</td>
       <td>
         <button class="icon-btn" onclick="openModal('edit', ${index})">✏️</button>
-        <button class="icon-btn" onclick="deleteCategory(${index})">🗑️</button>
+        <button class="icon-btn" onclick="delCategory(${index})">🗑️</button>
       </td>
     `;
           tableBody.appendChild(row);
@@ -276,16 +276,35 @@
             );
           }
         } else if (modalMode === 'edit' && editIndex !== null) {
-          categories[editIndex].name = name;
-          renderTable();
-          closeModal();
+          const category = categories[editIndex];
+          const result = await editCategory(category._id, name);
+
+          if (result.status === 201) {
+            showToast('Category Updated');
+            renderTable();
+            closeModal();
+          } else {
+            showToast(
+              'Category update failed: ' + (result.data?.message || 'Error'),
+              'error'
+            );
+          }
         }
       }
 
-      function deleteCategory(index) {
+      async function delCategory(index) {
         if (confirm('Are you sure you want to delete this category?')) {
-          categories.splice(index, 1);
-          renderTable();
+          const category = categories[index];
+          const result = await deleteCategory(category._id);
+          if (result.status === 201) {
+            showToast('Category Deleted');
+            renderTable();
+          } else {
+            showToast(
+              'Category Delete failed: ' + (result.data?.message || 'Error'),
+              'error'
+            );
+          }
         }
       }
 

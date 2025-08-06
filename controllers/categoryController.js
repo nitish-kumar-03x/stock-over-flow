@@ -55,9 +55,91 @@ const addCategory = async (req, res) => {
   }
 };
 
-const EditCategory = async (req, res) => {};
+const editCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+    const userEmail = req.userEmail;
 
-const deleteCategory = async (req, res) => {};
+    if (!name || !id) {
+      return res
+        .status(400)
+        .json({ message: 'Both name and ID are required.' });
+    }
+    const oldCategory = await categoryCollection.findOne({
+      _id: id,
+      email: userEmail,
+    });
+    const updatedCategory = await categoryCollection.findOneAndUpdate(
+      { _id: id, email: userEmail },
+      { name }
+    );
+
+    if (!updatedCategory) {
+      return res
+        .status(404)
+        .json({ message: 'Category not found or unauthorized.' });
+    }
+    categoryLogAction(
+      userEmail,
+      'Category',
+      'Updated',
+      `Category '${oldCategory.name}' updated to '${name}'.`
+    );
+    return res.status(201).json({
+      message: 'Category updated successfully.',
+      data: {
+        updatedCategory,
+      },
+    });
+  } catch (err) {
+    console.error('EditCategory Error:', err);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const userEmail = req.userEmail;
+    const { id } = req.params;
+
+    const oldCategory = await categoryCollection.findOne({
+      _id: id,
+      email: userEmail,
+    });
+    const isDeleted = await categoryCollection.findOneAndDelete({
+      _id: id,
+      email: userEmail,
+    });
+    if (isDeleted) {
+      categoryLogAction(
+        userEmail,
+        'Category',
+        'Deleted',
+        `Category '${oldCategory.name}' Deleted.`
+      );
+
+      return res.status(201).json({
+        success: true,
+        message: 'Category Deleted successfully.',
+        data: {},
+      });
+    } else {
+      return res.status(400).json({
+        message: 'Category Deleted Failed.',
+        data: {
+          updatedCategory,
+        },
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+};
 
 const getCategories = async (req, res) => {
   try {
@@ -85,4 +167,4 @@ const getCategories = async (req, res) => {
   }
 };
 
-module.exports = { addCategory, EditCategory, deleteCategory, getCategories };
+module.exports = { addCategory, editCategory, deleteCategory, getCategories };

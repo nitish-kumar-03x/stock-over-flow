@@ -134,3 +134,36 @@ async function getCategories() {
     data,
   };
 }
+
+async function editCategory(id, name) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/category/edit-category/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+    body: JSON.stringify({ name }),
+  });
+  const data = await res.json();
+  return {
+    status: res.status,
+    data,
+  };
+}
+
+async function deleteCategory(id) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/category/delete-category/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  });
+  const data = await res.json();
+  return {
+    status: res.status,
+    data,
+  };
+}
