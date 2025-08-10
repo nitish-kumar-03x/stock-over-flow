@@ -168,7 +168,7 @@ async function deleteCategory(id) {
   };
 }
 
-async function addproduct(name) {
+async function addproduct(payload) {
   const token = localStorage.getItem('stockOverFlow');
   const res = await fetch(`${API_BASE}/product/add-product`, {
     method: 'POST',
@@ -177,12 +177,20 @@ async function addproduct(name) {
       token: token,
     },
     body: JSON.stringify({
-      name,
+      ...payload
     }),
   });
   const data = await res.json();
   return {
     status: res.status,
     data,
+  };
+}
+
+async function getproducts(name) {
+
+  return {
+    status: 200,
+    data:{products: []},
   };
 }

@@ -44,7 +44,7 @@ const productLogAction = (
   comments = null
 ) => {
   mysqlPool.query(
-    'INSERT INTO `stock-over-flow-category-logs` (email, collection, action, description, comments) VALUES (?, ?, ?, ?, ?)',
+    'INSERT INTO `stock-over-flow-product-logs` (email, collection, action, description, comments) VALUES (?, ?, ?, ?, ?)',
     [email, collection, action, description, comments],
     (err) => {
       if (err) {
