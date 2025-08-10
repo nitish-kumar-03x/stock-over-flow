@@ -13,10 +13,8 @@
       }
 
       .product-container {
-        /* max-width: 1300px; */
         margin: 0 auto;
         padding: 0rem 1rem;
-        /* background: #fff; */
         border-radius: 9px;
         box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
       }
@@ -72,9 +70,11 @@
         height: 100%;
         background: rgba(0, 0, 0, 0.4);
         display: flex;
-        align-items: center;
+        align-items: flex-start; /* Align modal to the top */
         justify-content: center;
         z-index: 999;
+        padding-top: 80px; /* Add space from above */
+        box-sizing: border-box;
       }
 
       .modal {
@@ -82,30 +82,47 @@
         padding: 1.5rem;
         border-radius: 10px;
         width: 90%;
-        max-width: 400px;
+        max-width: 700px; /* wider modal */
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
-
-      .modal h3 {
-        margin-top: 0;
+      .modal-fields-row {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      #modal-title{
         color: #854836;
       }
-
-      .modal input {
+      .modal-fields-row > * {
+        flex: 1;
+        min-width: 0;
+      }
+      .modal input,
+      .modal textarea,
+      .modal select {
         width: 100%;
         padding: 0.6rem;
-        margin-top: 1rem;
         border: 1px solid #ccc;
         border-radius: 6px;
+        font-size: 1rem;
+        box-sizing: border-box;
+        resize: none;
+        margin-top: 0;
       }
-
+      .modal textarea {
+        min-height: 60px;
+        max-height: 120px;
+        margin-top: 1rem;
+      }
+      .modal select {
+        background: #fff;
+      }
       .modal-buttons {
         display: flex;
         justify-content: flex-end;
-        margin-top: 1rem;
+        margin-top: 1.5rem;
         gap: 1rem;
       }
-
       .modal-buttons button {
         padding: 0.5rem 1rem;
         border: none;
@@ -113,14 +130,21 @@
         font-weight: bold;
         cursor: pointer;
       }
-
       .modal-buttons .cancel-btn {
         background: #ccc;
       }
-
       .modal-buttons .submit-btn {
         background: #ffb22c;
         color: white;
+      }
+      @media (max-width: 900px) {
+        .modal {
+          max-width: 98vw;
+        }
+        .modal-fields-row {
+          flex-direction: column;
+          gap: 0;
+        }
       }
 
       @media (max-width: 600px) {
@@ -178,11 +202,79 @@
     <div id="modal-overlay" class="modal-overlay" style="display: none">
       <div class="modal">
         <h3 id="modal-title">Add New Product</h3>
-        <input
-          type="text"
-          id="product-name-input"
-          placeholder="Enter Product name"
-        />
+        <div class="modal-fields-row">
+          <input
+            type="text"
+            id="product-name-input"
+            placeholder="Product Name"
+          />
+          <select id="product-category-input" required>
+            <option value="">Select Category</option>
+          </select>
+        </div>
+        <div class="modal-fields-row">
+          <input type="text" id="product-brand-input" placeholder="Brand" />
+          <input
+            type="text"
+            id="product-unit-input"
+            placeholder="Unit (e.g. kg, pcs)"
+          />
+        </div>
+        <div class="modal-fields-row">
+          <input
+            type="number"
+            id="product-costPrice-input"
+            placeholder="Cost Price"
+          />
+          <input
+            type="number"
+            id="product-sellingPrice-input"
+            placeholder="Selling Price"
+          />
+        </div>
+        <div class="modal-fields-row">
+          <input
+            type="text"
+            id="product-location-input"
+            placeholder="Location"
+          />
+          <input
+            type="text"
+            id="product-batchNumber-input"
+            placeholder="Batch Number"
+          />
+        </div>
+        <div class="modal-fields-row">
+          <input
+            type="date"
+            id="product-expiryDate-input"
+            placeholder="Expiry Date"
+          />
+          <input
+            type="date"
+            id="product-manufactureDate-input"
+            placeholder="Manufacture Date"
+          />
+        </div>
+        <div class="modal-fields-row">
+          <input type="text" id="product-status-input" placeholder="Status" />
+          <input
+            type="text"
+            id="product-images-input"
+            placeholder="Images (comma separated URLs)"
+          />
+        </div>
+        <div class="modal-fields-row">
+          <input
+            type="text"
+            id="product-tags-input"
+            placeholder="Tags (comma separated)"
+          />
+        </div>
+        <textarea
+          id="product-description-input"
+          placeholder="Description"
+        ></textarea>
         <div class="modal-buttons">
           <button class="cancel-btn" onclick="closeModal()">Cancel</button>
           <button class="submit-btn" onclick="submitproduct()">Save</button>
@@ -196,9 +288,59 @@
       const modalOverlay = document.getElementById('modal-overlay');
       const productInput = document.getElementById('product-name-input');
       const modalTitle = document.getElementById('modal-title');
+      const productDescriptionInput = document.getElementById(
+        'product-description-input'
+      );
+      const productCategoryInput = document.getElementById(
+        'product-category-input'
+      );
+      const productBrandInput = document.getElementById('product-brand-input');
+      const productCostPriceInput = document.getElementById(
+        'product-costPrice-input'
+      );
+      const productSellingPriceInput = document.getElementById(
+        'product-sellingPrice-input'
+      );
+      const productUnitInput = document.getElementById('product-unit-input');
+      const productLocationInput = document.getElementById(
+        'product-location-input'
+      );
+      const productExpiryDateInput = document.getElementById(
+        'product-expiryDate-input'
+      );
+      const productManufactureDateInput = document.getElementById(
+        'product-manufactureDate-input'
+      );
+      const productBatchNumberInput = document.getElementById(
+        'product-batchNumber-input'
+      );
+      const productStatusInput = document.getElementById(
+        'product-status-input'
+      );
+      const productImagesInput = document.getElementById(
+        'product-images-input'
+      );
+      const productTagsInput = document.getElementById('product-tags-input');
 
       let modalMode = 'add'; // 'add' or 'edit'
       let editIndex = null;
+
+      async function populateCategoriesDropdown() {
+        productCategoryInput.innerHTML =
+          '<option value="">Select Category</option>';
+        const result = await getCategories();
+        if (
+          result.status === 201 &&
+          Array.isArray(result.data?.data?.categories)
+        ) {
+          result.data.data.categories.forEach((cat) => {
+            const opt = document.createElement('option');
+            opt.value = cat.name;
+            opt.textContent = cat.name;
+            productCategoryInput.appendChild(opt);
+          });
+        }
+      }
 
       async function renderTable() {
         tableBody.innerHTML = '';
@@ -216,23 +358,23 @@
         if (products.length === 0) {
           const row = document.createElement('tr');
           row.innerHTML = `
-      <td colspan="3" style="color: #999; text-align:center; font-style: italic;">
-        No products Added Right Now.
-      </td>`;
+        <td colspan="3" style="color: #999; text-align:center; font-style: italic;">
+          No products Added Right Now.
+        </td>`;
           tableBody.appendChild(row);
           return;
         }
 
-        products.forEach((cat, index) => {
+        products.forEach((prod, index) => {
           const row = document.createElement('tr');
           row.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${cat.name}</td>
-      <td>
-        <button class="icon-btn" onclick="openModal('edit', ${index})">✏️</button>
-        <button class="icon-btn" onclick="delproduct(${index})">🗑️</button>
-      </td>
-    `;
+        <td>${index + 1}</td>
+        <td>${prod.name}</td>
+        <td>
+          <button class="icon-btn" onclick="openModal('edit', ${index})">✏️</button>
+          <button class="icon-btn" onclick="delproduct(${index})">🗑️</button>
+        </td>
+      `;
           tableBody.appendChild(row);
         });
       }
@@ -240,13 +382,49 @@
       function openModal(mode, index = null) {
         modalMode = mode;
         editIndex = index;
+        populateCategoriesDropdown();
 
         if (mode === 'add') {
-          modalTitle.textContent = 'Add New product';
+          modalTitle.textContent = 'Add New Product';
           productInput.value = '';
-        } else if (mode === 'edit') {
-          modalTitle.textContent = 'Edit product';
-          productInput.value = products[index].name;
+          productDescriptionInput.value = '';
+          productCategoryInput.value = '';
+          productBrandInput.value = '';
+          productCostPriceInput.value = '';
+          productSellingPriceInput.value = '';
+          productUnitInput.value = '';
+          productLocationInput.value = '';
+          productExpiryDateInput.value = '';
+          productManufactureDateInput.value = '';
+          productBatchNumberInput.value = '';
+          productStatusInput.value = '';
+          productImagesInput.value = '';
+          productTagsInput.value = '';
+        } else if (mode === 'edit' && products[index]) {
+          const prod = products[index];
+          modalTitle.textContent = 'Edit Product';
+          productInput.value = prod.name || '';
+          productDescriptionInput.value = prod.description || '';
+          productCategoryInput.value = prod.category || '';
+          productBrandInput.value = prod.brand || '';
+          productCostPriceInput.value = prod.costPrice || '';
+          productSellingPriceInput.value = prod.sellingPrice || '';
+          productUnitInput.value = prod.unit || '';
+          productLocationInput.value = prod.location || '';
+          productExpiryDateInput.value = prod.expiryDate
+            ? prod.expiryDate.substr(0, 10)
+            : '';
+          productManufactureDateInput.value = prod.manufactureDate
+            ? prod.manufactureDate.substr(0, 10)
+            : '';
+          productBatchNumberInput.value = prod.batchNumber || '';
+          productStatusInput.value = prod.status || '';
+          productImagesInput.value = Array.isArray(prod.images)
+            ? prod.images.join(',')
+            : prod.images || '';
+          productTagsInput.value = Array.isArray(prod.tags)
+            ? prod.tags.join(',')
+            : prod.tags || '';
         }
 
         modalOverlay.style.display = 'flex';
@@ -261,31 +439,79 @@
 
       async function submitproduct() {
         const name = productInput.value.trim();
-        if (!name) return alert('product name is required.');
+        const description = productDescriptionInput.value.trim();
+        const category = productCategoryInput.value;
+        const brand = productBrandInput.value.trim();
+        const costPrice = productCostPriceInput.value.trim();
+        const sellingPrice = productSellingPriceInput.value.trim();
+        const unit = productUnitInput.value.trim();
+        const location = productLocationInput.value.trim();
+        const expiryDate = productExpiryDateInput.value;
+        const manufactureDate = productManufactureDateInput.value;
+        const batchNumber = productBatchNumberInput.value.trim();
+        const status = productStatusInput.value.trim();
+        const images = productImagesInput.value.trim();
+        const tags = productTagsInput.value.trim();
+
+        if (
+          !name ||
+          !description ||
+          !category ||
+          !brand ||
+          !costPrice ||
+          !sellingPrice ||
+          !unit ||
+          !location ||
+          !expiryDate ||
+          !manufactureDate ||
+          !batchNumber ||
+          !status ||
+          !images ||
+          !tags
+        ) {
+          return alert('All fields are required.');
+        }
+
+        const payload = {
+          name,
+          description,
+          category,
+          brand,
+          costPrice,
+          sellingPrice,
+          unit,
+          location,
+          expiryDate,
+          manufactureDate,
+          batchNumber,
+          status,
+          images: images.split(',').map((i) => i.trim()),
+          tags: tags.split(',').map((t) => t.trim()),
+        };
 
         if (modalMode === 'add') {
-          const result = await addproduct(name);
+          const result = await addproduct(payload);
           if (result.status == 201) {
-            showToast('product Added');
+            showToast('Product Added');
             renderTable();
             closeModal();
           } else {
             showToast(
-              'product Added failed: ' + (result.data?.message || 'Error'),
+              'Product Add failed: ' + (result.data?.message || 'Error'),
               'error'
             );
           }
         } else if (modalMode === 'edit' && editIndex !== null) {
           const product = products[editIndex];
-          const result = await editproduct(product._id, name);
+          const result = await editproduct(product._id, payload);
 
           if (result.status === 201) {
-            showToast('product Updated');
+            showToast('Product Updated');
             renderTable();
             closeModal();
           } else {
             showToast(
-              'product update failed: ' + (result.data?.message || 'Error'),
+              'Product update failed: ' + (result.data?.message || 'Error'),
               'error'
             );
           }
@@ -297,11 +523,11 @@
           const product = products[index];
           const result = await deleteproduct(product._id);
           if (result.status === 201) {
-            showToast('product Deleted');
+            showToast('Product Deleted');
             renderTable();
           } else {
             showToast(
-              'product Delete failed: ' + (result.data?.message || 'Error'),
+              'Product Delete failed: ' + (result.data?.message || 'Error'),
               'error'
             );
           }

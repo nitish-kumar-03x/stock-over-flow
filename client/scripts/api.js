@@ -170,7 +170,7 @@ async function deleteCategory(id) {
 
 async function addproduct(name) {
   const token = localStorage.getItem('stockOverFlow');
-  const res = await fetch(`${API_BASE}/category/add-product`, {
+  const res = await fetch(`${API_BASE}/product/add-product`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
