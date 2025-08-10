@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const authRouter = require('./routes/authRoute');
 const categoryRouter = require('./routes/categoryRoute');
+const productRouter = require('./routes/productRoute');
 require('dotenv').config();
 
 const connectMongoDB = require('./config/mongodb');
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/auth', authRouter);
 app.use('/api/category', categoryRouter);
+app.use('/api/product', productRouter);
 
 // Connect to MongoDB and start server
 connectMongoDB()
