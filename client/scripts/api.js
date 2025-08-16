@@ -168,18 +168,17 @@ async function deleteCategory(id) {
   };
 }
 
-async function addproduct(payload) {
+async function addProduct(formData) {
   const token = localStorage.getItem('stockOverFlow');
+
   const res = await fetch(`${API_BASE}/product/add-product`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       token: token,
     },
-    body: JSON.stringify({
-      ...payload
-    }),
+    body: formData,
   });
+
   const data = await res.json();
   return {
     status: res.status,
@@ -187,10 +186,20 @@ async function addproduct(payload) {
   };
 }
 
-async function getproducts(name) {
+async function getProducts() {
+  const token = localStorage.getItem('stockOverFlow');
+
+  const res = await fetch(`${API_BASE}/product/get-products`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  });
+  const data = await res.json();
 
   return {
-    status: 200,
-    data:{products: []},
+    status: res.status,
+    data,
   };
 }

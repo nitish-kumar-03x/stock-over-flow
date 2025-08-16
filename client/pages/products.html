@@ -75,6 +75,7 @@
         z-index: 999;
         padding-top: 80px; /* Add space from above */
         box-sizing: border-box;
+        overflow: auto;
       }
 
       .modal {
@@ -90,7 +91,7 @@
         gap: 1rem;
         margin-top: 1rem;
       }
-      #modal-title{
+      #modal-title {
         color: #854836;
       }
       .modal-fields-row > * {
@@ -170,6 +171,174 @@
         justify-content: end;
         padding: 0px 3rem;
       }
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f7f4f0;
+      }
+      .product-list-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
+      }
+      .product-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 2rem;
+        border-bottom: 1px solid #eee;
+        padding: 1.5rem 0;
+      }
+      .product-card:last-child {
+        border-bottom: none;
+      }
+      .product-image-section {
+        flex: 0 0 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .product-image-section img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        border-radius: 8px;
+        background: #fafafa;
+        border: 1px solid #eee;
+      }
+      .product-details-section {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .product-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #854836;
+        margin-bottom: 0.2rem;
+      }
+      .product-tags {
+        color: #888;
+        font-size: 0.95em;
+        margin-bottom: 0.2rem;
+      }
+      .product-description {
+        color: #444;
+        font-size: 1em;
+        margin-bottom: 0.2rem;
+      }
+      .product-meta {
+        color: #666;
+        font-size: 0.95em;
+      }
+      .product-price-section {
+        flex: 0 0 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-start;
+        min-width: 120px;
+      }
+      .product-price {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 0.5rem;
+      }
+      .product-cost {
+        font-size: 1rem;
+        color: #888;
+        text-decoration: line-through;
+      }
+      .product-status {
+        font-size: 0.95em;
+        color: #fff;
+        background: #ffb22c;
+        border-radius: 4px;
+        padding: 2px 8px;
+        margin-top: 0.5rem;
+        display: inline-block;
+      }
+      .tag-badge {
+        display: inline-block;
+        background: linear-gradient(90deg, #ffb22c 60%, #ff9800 100%);
+        color: #000;
+        border-radius: 16px;
+        padding: 4px 16px;
+        font-size: 1em;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(255, 178, 44, 0.1);
+        border: none;
+        transition: background 0.2s;
+      }
+      .tag-badge:hover {
+        background: linear-gradient(90deg, #ff9800 60%, #ffb22c 100%);
+      }
+      .product-price-section {
+        flex: 0 0 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-start;
+        min-width: 120px;
+        gap: 0.5em;
+      }
+      .product-price-label,
+      .product-cost-label {
+        margin-bottom: 0.1em;
+        font-weight: bold;
+        text-align: right;
+      }
+      .product-price {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #2e7d32;
+        margin-bottom: 0.2rem;
+        display: block;
+        text-align: right;
+      }
+      .product-cost {
+        font-size: 1.2rem;
+        color: #854836;
+        font-weight: bold;
+        margin-bottom: 0.2rem;
+        display: block;
+        text-align: right;
+        text-decoration: none; /* Remove strikethrough */
+      }
+      .product-status {
+        font-size: 0.95em;
+        color: #fff;
+        background: #ffb22c;
+        border-radius: 4px;
+        padding: 2px 8px;
+        margin-top: 0.5rem;
+        display: inline-block;
+        text-align: right;
+      }
+
+      @media (max-width: 700px) {
+        .product-card {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .product-image-section,
+        .product-price-section {
+          align-items: flex-start;
+        }
+        .product-price-section {
+          align-items: flex-start;
+          margin-top: 0.5rem;
+        }
+      }
     </style>
     <script defer src="../scripts/api.js"></script>
     <script defer src="../scripts/common.js"></script>
@@ -182,20 +351,8 @@
         Add New
       </button>
     </div>
-
-    <div class="product-container">
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 10%">S.No</th>
-            <th style="width: 70%">Product</th>
-            <th style="width: 20%">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="product-table-body">
-          <!-- Rows will be injected here -->
-        </tbody>
-      </table>
+    <div class="product-list-container" id="product-list-container">
+      <!-- Product cards will be injected here -->
     </div>
 
     <!-- Modal -->
@@ -214,11 +371,15 @@
         </div>
         <div class="modal-fields-row">
           <input type="text" id="product-brand-input" placeholder="Brand" />
-          <input
-            type="text"
-            id="product-unit-input"
-            placeholder="Unit (e.g. kg, pcs)"
-          />
+          <select id="product-unit-input">
+            <option value="">Select Unit</option>
+            <option value="kg">kg</option>
+            <option value="g">g</option>
+            <option value="litre">litre</option>
+            <option value="ml">ml</option>
+            <option value="pcs">pcs</option>
+            <option value="box">box</option>
+          </select>
         </div>
         <div class="modal-fields-row">
           <input
@@ -245,23 +406,40 @@
           />
         </div>
         <div class="modal-fields-row">
-          <input
-            type="date"
-            id="product-expiryDate-input"
-            placeholder="Expiry Date"
-          />
-          <input
-            type="date"
-            id="product-manufactureDate-input"
-            placeholder="Manufacture Date"
-          />
+          <div style="flex: 1">
+            <label for="product-manufactureDate-input" style="font-size: 0.95em"
+              >Manufacture Date</label
+            >
+            <input
+              type="date"
+              id="product-manufactureDate-input"
+              style="margin-top: 0.3em"
+            />
+          </div>
+          <div style="flex: 1">
+            <label for="product-expiryDate-input" style="font-size: 0.95em"
+              >Expiry Date</label
+            >
+            <input
+              type="date"
+              id="product-expiryDate-input"
+              style="margin-top: 0.3em"
+            />
+          </div>
         </div>
         <div class="modal-fields-row">
-          <input type="text" id="product-status-input" placeholder="Status" />
+          <select id="product-status-input">
+            <option value="">Select Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="discontinued">Discontinued</option>
+          </select>
           <input
-            type="text"
+            type="file"
             id="product-images-input"
-            placeholder="Images (comma separated URLs)"
+            placeholder="Images"
+            accept="image/*"
+            style="padding: 0.4rem 0.6rem"
           />
         </div>
         <div class="modal-fields-row">
@@ -341,44 +519,69 @@
           });
         }
       }
-
-      async function renderTable() {
-        tableBody.innerHTML = '';
-
-        const result = await getproducts();
-
+      async function renderProductList() {
+        const container = document.getElementById('product-list-container');
+        container.innerHTML = '';
+        const result = await getProducts();
         if (
           result.status === 201 &&
-          Array.isArray(result.data?.data?.products)
+          Array.isArray(result.data?.data?.products) &&
+          result.data.data.products.length > 0
         ) {
-          products.length = 0; // clear existing
-          products.push(...result.data.data.products); // update
+          result.data.data.products.forEach((prod, index) => {
+            const tagsArr = Array.isArray(prod.tags[0])
+              ? prod.tags[0]
+              : typeof prod.tags[0] === 'string' && prod.tags[0].startsWith('[')
+                ? JSON.parse(prod.tags[0])
+                : typeof prod.tags[0] === 'string'
+                  ? prod.tags[0]
+                      .split(',')
+                      .map((t) => t.trim())
+                      .filter(Boolean)
+                  : [];
+            const tagsHtml = tagsArr
+              .map((tag) => `<span class="tag-badge">${tag}</span>`)
+              .join(' ');
+            const imgUrl =
+              prod.image || (Array.isArray(prod.images) ? prod.images[0] : '');
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+  <div class="product-image-section">
+    <img src="${imgUrl || '../assets/no-image.png'}" alt="${prod.name}" />
+  </div>
+  <div class="product-details-section">
+    <div class="product-title">${prod.name}</div>
+    <div class="product-tags">${tagsHtml}</div>
+    <div class="product-description">${prod.description || ''}</div>
+    <div class="product-meta">
+      <b>Brand:</b> ${prod.brand || '-'} |
+      <b>Category:</b> ${prod.category || '-'} |
+      <b>Unit:</b> ${prod.unit || '-'} |
+      <b>Batch:</b> ${prod.batchNumber || '-'}<br>
+      <b>Location:</b> ${prod.location || '-'} |
+<b>Manufacture:</b> ${formatDateDMY(prod.manufactureDate)} |
+<b>Expiry:</b> ${formatDateDMY(prod.expiryDate)} 
+    </div>
+  </div>
+  <div class="product-price-section">
+    <div class="product-price-label">Selling Price:</div>
+    <span class="product-price">₹${prod.sellingPrice}</span>
+    <div class="product-cost-label">Cost Price:</div>
+    <span class="product-cost">₹${prod.costPrice}</span>
+    <div class="product-status">${prod.status || ''}</div>
+    <div style="margin-top:1rem; display: flex;">
+      <button class="icon-btn" onclick="openModal('edit', ${index})" title="Edit"><span style="font-size:1.2em;">✏️</span></button>
+      <button class="icon-btn" onclick="delproduct(${index})" title="Delete"><span style="font-size:1.2em;">🗑️</span></button>
+    </div>
+  </div>
+`;
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = `<div style="color:#999;text-align:center;font-style:italic;padding:2rem;">No products found.</div>`;
         }
-
-        if (products.length === 0) {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-        <td colspan="3" style="color: #999; text-align:center; font-style: italic;">
-          No products Added Right Now.
-        </td>`;
-          tableBody.appendChild(row);
-          return;
-        }
-
-        products.forEach((prod, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${prod.name}</td>
-        <td>
-          <button class="icon-btn" onclick="openModal('edit', ${index})">✏️</button>
-          <button class="icon-btn" onclick="delproduct(${index})">🗑️</button>
-        </td>
-      `;
-          tableBody.appendChild(row);
-        });
       }
-
       function openModal(mode, index = null) {
         modalMode = mode;
         editIndex = index;
@@ -422,9 +625,9 @@
           productImagesInput.value = Array.isArray(prod.images)
             ? prod.images.join(',')
             : prod.images || '';
-          productTagsInput.value = Array.isArray(prod.tags)
-            ? prod.tags.join(',')
-            : prod.tags || '';
+          productTagsInput.value = Array.isArray(prod.tags[0])
+            ? prod.tags[0].join(',')
+            : prod.tags[0] || '';
         }
 
         modalOverlay.style.display = 'flex';
@@ -450,7 +653,8 @@
         const manufactureDate = productManufactureDateInput.value;
         const batchNumber = productBatchNumberInput.value.trim();
         const status = productStatusInput.value.trim();
-        const images = productImagesInput.value.trim();
+        const imagesInput = document.getElementById('product-images-input');
+        const imageFile = imagesInput.files[0];
         const tags = productTagsInput.value.trim();
 
         if (
@@ -466,34 +670,37 @@
           !manufactureDate ||
           !batchNumber ||
           !status ||
-          !images ||
+          !imageFile ||
           !tags
         ) {
           return alert('All fields are required.');
         }
 
-        const payload = {
-          name,
-          description,
-          category,
-          brand,
-          costPrice,
-          sellingPrice,
-          unit,
-          location,
-          expiryDate,
-          manufactureDate,
-          batchNumber,
-          status,
-          images: images.split(',').map((i) => i.trim()),
-          tags: tags.split(',').map((t) => t.trim()),
-        };
+        // Use FormData for file + text data
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('category', category);
+        formData.append('brand', brand);
+        formData.append('costPrice', costPrice);
+        formData.append('sellingPrice', sellingPrice);
+        formData.append('unit', unit);
+        formData.append('location', location);
+        formData.append('expiryDate', expiryDate);
+        formData.append('manufactureDate', manufactureDate);
+        formData.append('batchNumber', batchNumber);
+        formData.append('status', status);
+        formData.append('image', imageFile); // send actual file
+        formData.append(
+          'tags',
+          JSON.stringify(tags.split(',').map((t) => t.trim()))
+        );
 
         if (modalMode === 'add') {
-          const result = await addproduct(payload);
-          if (result.status == 201) {
+          const result = await addProduct(formData); // Pass FormData
+          if (result.status === 201) {
             showToast('Product Added');
-            renderTable();
+            renderProductList();
             closeModal();
           } else {
             showToast(
@@ -503,11 +710,11 @@
           }
         } else if (modalMode === 'edit' && editIndex !== null) {
           const product = products[editIndex];
-          const result = await editproduct(product._id, payload);
+          const result = await editproduct(product._id, formData); // Pass FormData
 
           if (result.status === 201) {
             showToast('Product Updated');
-            renderTable();
+            renderProductList();
             closeModal();
           } else {
             showToast(
@@ -524,7 +731,7 @@
           const result = await deleteproduct(product._id);
           if (result.status === 201) {
             showToast('Product Deleted');
-            renderTable();
+            renderProductList();
           } else {
             showToast(
               'Product Delete failed: ' + (result.data?.message || 'Error'),
@@ -534,9 +741,17 @@
         }
       }
 
-      // Initial render
+      function formatDateDMY(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        if (isNaN(d)) return '-';
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
       document.addEventListener('DOMContentLoaded', () => {
-        renderTable();
+        renderProductList();
       });
     </script>
   </body>

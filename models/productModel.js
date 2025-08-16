@@ -54,12 +54,10 @@ const productSchema = new mongoose.Schema(
       enum: ['active', 'inactive', 'discontinued'],
       default: 'active',
     },
-    images: [
-      {
-        type: [String], // array of strings
-        required: true,
-      },
-    ],
+    image: {
+      type: String,
+      required: true,
+    },
     tags: [String], // for search and filtering
     email: {
       type: String,

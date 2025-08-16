@@ -17,7 +17,7 @@ const addProduct = async (req, res) => {
       manufactureDate,
       batchNumber,
       status,
-      images,
+      image,
       tags,
     } = await req.body;
 
@@ -34,7 +34,7 @@ const addProduct = async (req, res) => {
       !manufactureDate ||
       !batchNumber ||
       !status ||
-      !images ||
+      !image ||
       !tags
     ) {
       return res.status(400).json({
@@ -67,7 +67,7 @@ const addProduct = async (req, res) => {
       manufactureDate,
       batchNumber,
       status,
-      images,
+      image,
       tags,
       email: userEmail,
     });
@@ -88,4 +88,30 @@ const addProduct = async (req, res) => {
     });
   }
 };
-module.exports = { addProduct };
+
+const getProducts = async (req, res) => {
+  try {
+    const userEmail = req.userEmail;
+
+    const products = await productCollection
+      .find({
+        email: userEmail,
+      })
+      .sort({ createdAt: -1 });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Products Fetched successfully.',
+      data: {
+        products,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+};
+module.exports = { addProduct, getProducts };
