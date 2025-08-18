@@ -78,7 +78,7 @@ const addProduct = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: 'product added successfully.',
-      data: {product: newProduct},
+      data: { product: newProduct },
     });
   } catch (error) {
     console.error(error);
@@ -92,11 +92,21 @@ const addProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const userEmail = req.userEmail;
+    const { name, category, brand, batchNumber, unit, status } = req.query;
+
+    // Build filter object
+    const filter = {};
+    filter.email = userEmail;
+    if (name) filter.name = { $regex: name, $options: 'i' };
+    if (category) filter.category = category;
+    if (brand) filter.brand = { $regex: brand, $options: 'i' };
+    if (batchNumber)
+      filter.batchNumber = { $regex: batchNumber, $options: 'i' };
+    if (unit) filter.unit = unit;
+    if (status) filter.status = status;
 
     const products = await productCollection
-      .find({
-        email: userEmail,
-      })
+      .find(filter)
       .sort({ createdAt: -1 });
 
     return res.status(201).json({
@@ -114,4 +124,45 @@ const getProducts = async (req, res) => {
     });
   }
 };
-module.exports = { addProduct, getProducts };
+const deleteProduct = async (req, res) => {
+  try {
+    const userEmail = req.userEmail;
+    const { id } = req.params;
+
+    const oldProduct = await productCollection.findOne({
+      email: userEmail,
+      _id: id,
+    });
+
+    const isDeleted = await productCollection.findOneAndDelete({
+      email: userEmail,
+      _id: id,
+    });
+
+    if (isDeleted) {
+      productLogAction(
+        userEmail,
+        'Product',
+        'Deleted',
+        `Product '${oldProduct.name}' Deleted.`
+      );
+
+      return res.status(201).json({
+        status: true,
+        message: 'Product Deleted.',
+        data: {},
+      });
+    } else {
+      return res.status(400).json({
+        message: 'Product Deleted Failed.',
+        data: {},
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+};
+module.exports = { addProduct, getProducts, deleteProduct };

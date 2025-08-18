@@ -20,8 +20,6 @@
       }
 
       .add-product-btn {
-        margin-top: 20px;
-        margin-left: 20px;
         background-color: #ffb22c;
         color: #000;
         border: none;
@@ -168,8 +166,7 @@
       }
 
       .add-c-b-wrapper {
-        justify-content: end;
-        padding: 0px 3rem;
+        padding-bottom: 1rem;
       }
       body {
         margin: 0;
@@ -179,7 +176,7 @@
         background: #f7f4f0;
       }
       .product-list-container {
-        max-width: 1000px;
+        max-width: 1100px;
         margin: 2rem auto;
         padding: 1rem;
         background: #fff;
@@ -339,6 +336,73 @@
           margin-top: 0.5rem;
         }
       }
+      .filters-panel {
+        width: 260px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
+        padding: 1.5rem 1rem 1rem 1rem;
+        margin: 2rem 1.5rem 2rem 2rem;
+        float: left;
+      }
+      .filters-panel h3 {
+        margin-top: 0;
+        color: #854836;
+        font-size: 1.2rem;
+        margin-bottom: 1.2rem;
+      }
+      .filter-group {
+        margin-bottom: 1.1rem;
+      }
+      .filter-group label {
+        display: block;
+        font-size: 1em;
+        color: #854836;
+        margin-bottom: 0.3em;
+        font-weight: 500;
+      }
+      .filter-group input,
+      .filter-group select {
+        width: 100%;
+        padding: 0.5em 0.7em;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1em;
+        box-sizing: border-box;
+      }
+      .filter-btn {
+        width: 48%;
+        margin-right: 2%;
+        background: #ffb22c;
+        color: #000;
+        border: none;
+        padding: 8px 0;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-bottom: 0.5em;
+      }
+      .filter-btn.clear {
+        background: #eee;
+        color: #854836;
+        margin-right: 0;
+      }
+      @media (max-width: 900px) {
+        .filters-panel {
+          float: none;
+          width: 100%;
+          margin: 1rem 0;
+          display: block;
+        }
+      }
+      .product-list-container {
+        margin-left: 350px; /* leave space for filters */
+      }
+      @media (max-width: 900px) {
+        .product-list-container {
+          margin-left: 0;
+        }
+      }
     </style>
     <script defer src="../scripts/api.js"></script>
     <script defer src="../scripts/common.js"></script>
@@ -346,10 +410,55 @@
 
   <body>
     <div id="navbar-private"></div>
-    <div class="d-flex add-c-b-wrapper">
-      <button class="add-product-btn" onclick="openModal('add')">
-        Add New
-      </button>
+    <div class="filters-panel">
+      <div class="d-flex add-c-b-wrapper">
+        <button class="add-product-btn" onclick="openModal('add')">
+          Add New
+        </button>
+      </div>
+      <h3>Filters</h3>
+      <button class="filter-btn" onclick="applyFilters()">Apply Filters</button>
+      <button class="filter-btn clear" onclick="clearFilters()">Clear</button>
+      <div class="filter-group">
+        <label for="filter-name">Name</label>
+        <input type="text" id="filter-name" placeholder="Search Name" />
+      </div>
+      <div class="filter-group">
+        <label for="filter-category">Category</label>
+        <select id="filter-category">
+          <option value="">All</option>
+          <!-- Categories will be populated dynamically -->
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-brand">Brand</label>
+        <input type="text" id="filter-brand" placeholder="Search Brand" />
+      </div>
+      <div class="filter-group">
+        <label for="filter-batch">Batch</label>
+        <input type="text" id="filter-batch" placeholder="Batch Number" />
+      </div>
+      <div class="filter-group">
+        <label for="filter-unit">Unit</label>
+        <select id="filter-unit">
+          <option value="">All</option>
+          <option value="kg">kg</option>
+          <option value="g">g</option>
+          <option value="litre">litre</option>
+          <option value="ml">ml</option>
+          <option value="pcs">pcs</option>
+          <option value="box">box</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-status">Status</label>
+        <select id="filter-status">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="discontinued">Discontinued</option>
+        </select>
+      </div>
     </div>
     <div class="product-list-container" id="product-list-container">
       <!-- Product cards will be injected here -->
@@ -461,7 +570,7 @@
     </div>
 
     <script>
-      const products = [];
+      let products = [];
       const tableBody = document.getElementById('product-table-body');
       const modalOverlay = document.getElementById('modal-overlay');
       const productInput = document.getElementById('product-name-input');
@@ -519,63 +628,98 @@
           });
         }
       }
+      async function populateCategoriesFilterDropdown() {
+        const filterCategory = document.getElementById('filter-category');
+        filterCategory.innerHTML = '<option value="">All</option>';
+        const result = await getCategories();
+        if (
+          result.status === 201 &&
+          Array.isArray(result.data?.data?.categories)
+        ) {
+          result.data.data.categories.forEach((cat) => {
+            const opt = document.createElement('option');
+            opt.value = cat.name;
+            opt.textContent = cat.name;
+            filterCategory.appendChild(opt);
+          });
+        }
+      }
+
+      function clearFilters() {
+        document.getElementById('filter-name').value = '';
+        document.getElementById('filter-category').value = '';
+        document.getElementById('filter-brand').value = '';
+        document.getElementById('filter-batch').value = '';
+        document.getElementById('filter-unit').value = '';
+        document.getElementById('filter-status').value = '';
+        applyFilters();
+      }
+
+      function applyFilters() {
+        renderProductList();
+      }
+
       async function renderProductList() {
         const container = document.getElementById('product-list-container');
         container.innerHTML = '';
-        const result = await getProducts();
+        const name = document.getElementById('filter-name').value.trim();
+        const category = document.getElementById('filter-category').value;
+        const brand = document.getElementById('filter-brand').value.trim();
+        const batch = document.getElementById('filter-batch').value.trim();
+        const unit = document.getElementById('filter-unit').value;
+        const status = document.getElementById('filter-status').value;
+
+        const filter = { name, category, brand, batch, unit, status };
+        const result = await getProducts(filter);
         if (
           result.status === 201 &&
           Array.isArray(result.data?.data?.products) &&
           result.data.data.products.length > 0
         ) {
-          result.data.data.products.forEach((prod, index) => {
-            const tagsArr = Array.isArray(prod.tags[0])
-              ? prod.tags[0]
-              : typeof prod.tags[0] === 'string' && prod.tags[0].startsWith('[')
-                ? JSON.parse(prod.tags[0])
-                : typeof prod.tags[0] === 'string'
-                  ? prod.tags[0]
-                      .split(',')
-                      .map((t) => t.trim())
-                      .filter(Boolean)
-                  : [];
+          products = result.data.data.products;
+           result.data.data.products.forEach((prod, index) => {
+
+         const tagsArr = JSON.parse(prod.tags[0]);
+
             const tagsHtml = tagsArr
               .map((tag) => `<span class="tag-badge">${tag}</span>`)
               .join(' ');
+            
+              
             const imgUrl =
               prod.image || (Array.isArray(prod.images) ? prod.images[0] : '');
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-  <div class="product-image-section">
-    <img src="${imgUrl || '../assets/no-image.png'}" alt="${prod.name}" />
-  </div>
-  <div class="product-details-section">
-    <div class="product-title">${prod.name}</div>
-    <div class="product-tags">${tagsHtml}</div>
-    <div class="product-description">${prod.description || ''}</div>
-    <div class="product-meta">
-      <b>Brand:</b> ${prod.brand || '-'} |
-      <b>Category:</b> ${prod.category || '-'} |
-      <b>Unit:</b> ${prod.unit || '-'} |
-      <b>Batch:</b> ${prod.batchNumber || '-'}<br>
-      <b>Location:</b> ${prod.location || '-'} |
-<b>Manufacture:</b> ${formatDateDMY(prod.manufactureDate)} |
-<b>Expiry:</b> ${formatDateDMY(prod.expiryDate)} 
-    </div>
-  </div>
-  <div class="product-price-section">
-    <div class="product-price-label">Selling Price:</div>
-    <span class="product-price">₹${prod.sellingPrice}</span>
-    <div class="product-cost-label">Cost Price:</div>
-    <span class="product-cost">₹${prod.costPrice}</span>
-    <div class="product-status">${prod.status || ''}</div>
-    <div style="margin-top:1rem; display: flex;">
-      <button class="icon-btn" onclick="openModal('edit', ${index})" title="Edit"><span style="font-size:1.2em;">✏️</span></button>
-      <button class="icon-btn" onclick="delproduct(${index})" title="Delete"><span style="font-size:1.2em;">🗑️</span></button>
-    </div>
-  </div>
-`;
+        <div class="product-image-section">
+          <img src="${imgUrl || '../assets/no-image.png'}" alt="${prod.name}" />
+        </div>
+        <div class="product-details-section">
+          <div class="product-title">${prod.name}</div>
+          <div class="product-tags">${tagsHtml}</div>
+          <div class="product-description">${prod.description || ''}</div>
+          <div class="product-meta">
+            <b>Brand:</b> ${prod.brand || '-'} |
+            <b>Category:</b> ${prod.category || '-'} |
+            <b>Unit:</b> ${prod.unit || '-'} |
+            <b>Batch:</b> ${prod.batchNumber || '-'}<br>
+            <b>Location:</b> ${prod.location || '-'} |
+      <b>Manufacture:</b> ${formatDateDMY(prod.manufactureDate)} |
+      <b>Expiry:</b> ${formatDateDMY(prod.expiryDate)}
+          </div>
+        </div>
+        <div class="product-price-section">
+          <div class="product-price-label">Selling Price:</div>
+          <span class="product-price">₹${prod.sellingPrice}</span>
+          <div class="product-cost-label">Cost Price:</div>
+          <span class="product-cost">₹${prod.costPrice}</span>
+          <div class="product-status">${prod.status || ''}</div>
+          <div style="margin-top:1rem; display: flex;">
+            <button class="icon-btn" onclick="openModal('edit', ${index})" title="Edit"><span style="font-size:1.2em;">✏️</span></button>
+            <button class="icon-btn" onclick="delproduct(${index})" title="Delete"><span style="font-size:1.2em;">🗑️</span></button>
+          </div>
+        </div>
+      `;
             container.appendChild(card);
           });
         } else {
@@ -728,7 +872,7 @@
       async function delproduct(index) {
         if (confirm('Are you sure you want to delete this product?')) {
           const product = products[index];
-          const result = await deleteproduct(product._id);
+          const result = await deleteProduct(product._id);
           if (result.status === 201) {
             showToast('Product Deleted');
             renderProductList();
@@ -752,6 +896,7 @@
       }
       document.addEventListener('DOMContentLoaded', () => {
         renderProductList();
+        populateCategoriesFilterDropdown();
       });
     </script>
   </body>

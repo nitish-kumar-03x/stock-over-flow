@@ -186,18 +186,41 @@ async function addProduct(formData) {
   };
 }
 
-async function getProducts() {
+async function getProducts(filter = {}) {
   const token = localStorage.getItem('stockOverFlow');
 
-  const res = await fetch(`${API_BASE}/product/get-products`, {
+  // Convert filter object to query string
+  const params = new URLSearchParams();
+  for (const key in filter) {
+    if (filter[key]) params.append(key, filter[key]);
+  }
+
+  const res = await fetch(`${API_BASE}/product/get-products?${params.toString()}`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    }
+  });
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
+}
+
+
+async function deleteProduct(id) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/product/delete-product/${id}`, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       token: token,
     },
   });
   const data = await res.json();
-
   return {
     status: res.status,
     data,

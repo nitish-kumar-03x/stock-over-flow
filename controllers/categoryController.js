@@ -127,9 +127,7 @@ const deleteCategory = async (req, res) => {
     } else {
       return res.status(400).json({
         message: 'Category Deleted Failed.',
-        data: {
-          updatedCategory,
-        },
+        data: {},
       });
     }
   } catch (error) {
