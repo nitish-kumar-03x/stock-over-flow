@@ -612,7 +612,7 @@
       let modalMode = 'add'; // 'add' or 'edit'
       let editIndex = null;
 
-      async function populateCategoriesDropdown() {
+      async function populateCategoriesDropdown(selectedCategory = '') {
         productCategoryInput.innerHTML =
           '<option value="">Select Category</option>';
         const result = await getCategories();
@@ -626,6 +626,10 @@
             opt.textContent = cat.name;
             productCategoryInput.appendChild(opt);
           });
+        }
+        // Set selected value if provided
+        if (selectedCategory) {
+          productCategoryInput.value = selectedCategory;
         }
       }
       async function populateCategoriesFilterDropdown() {
@@ -665,11 +669,13 @@
         const name = document.getElementById('filter-name').value.trim();
         const category = document.getElementById('filter-category').value;
         const brand = document.getElementById('filter-brand').value.trim();
-        const batch = document.getElementById('filter-batch').value.trim();
+        const batchNumber = document
+          .getElementById('filter-batch')
+          .value.trim();
         const unit = document.getElementById('filter-unit').value;
         const status = document.getElementById('filter-status').value;
 
-        const filter = { name, category, brand, batch, unit, status };
+        const filter = { name, category, brand, batchNumber, unit, status };
         const result = await getProducts(filter);
         if (
           result.status === 201 &&
@@ -677,15 +683,13 @@
           result.data.data.products.length > 0
         ) {
           products = result.data.data.products;
-           result.data.data.products.forEach((prod, index) => {
-
-         const tagsArr = JSON.parse(prod.tags[0]);
+          result.data.data.products.forEach((prod, index) => {
+            const tagsArr = JSON.parse(prod.tags[0]);
 
             const tagsHtml = tagsArr
               .map((tag) => `<span class="tag-badge">${tag}</span>`)
               .join(' ');
-            
-              
+
             const imgUrl =
               prod.image || (Array.isArray(prod.images) ? prod.images[0] : '');
             const card = document.createElement('div');
@@ -726,16 +730,17 @@
           container.innerHTML = `<div style="color:#999;text-align:center;font-style:italic;padding:2rem;">No products found.</div>`;
         }
       }
-      function openModal(mode, index = null) {
+      async function openModal(mode, index = null) {
         modalMode = mode;
         editIndex = index;
-        populateCategoriesDropdown();
 
         if (mode === 'add') {
           modalTitle.textContent = 'Add New Product';
+          await populateCategoriesDropdown('');
           productInput.value = '';
           productDescriptionInput.value = '';
           productCategoryInput.value = '';
+          productImagesInput.style.visibility = 'visible';
           productBrandInput.value = '';
           productCostPriceInput.value = '';
           productSellingPriceInput.value = '';
@@ -750,9 +755,10 @@
         } else if (mode === 'edit' && products[index]) {
           const prod = products[index];
           modalTitle.textContent = 'Edit Product';
+          await populateCategoriesDropdown(prod.category || '');
           productInput.value = prod.name || '';
           productDescriptionInput.value = prod.description || '';
-          productCategoryInput.value = prod.category || '';
+          // productCategoryInput.value is already set above
           productBrandInput.value = prod.brand || '';
           productCostPriceInput.value = prod.costPrice || '';
           productSellingPriceInput.value = prod.sellingPrice || '';
@@ -766,12 +772,11 @@
             : '';
           productBatchNumberInput.value = prod.batchNumber || '';
           productStatusInput.value = prod.status || '';
-          productImagesInput.value = Array.isArray(prod.images)
-            ? prod.images.join(',')
-            : prod.images || '';
-          productTagsInput.value = Array.isArray(prod.tags[0])
-            ? prod.tags[0].join(',')
-            : prod.tags[0] || '';
+          productImagesInput.style.visibility = 'hidden';
+          const tagsArr = JSON.parse(prod.tags[0]);
+          productTagsInput.value = Array.isArray(tagsArr)
+            ? tagsArr.join(',')
+            : tagsArr || '';
         }
 
         modalOverlay.style.display = 'flex';
@@ -800,24 +805,43 @@
         const imagesInput = document.getElementById('product-images-input');
         const imageFile = imagesInput.files[0];
         const tags = productTagsInput.value.trim();
-
-        if (
-          !name ||
-          !description ||
-          !category ||
-          !brand ||
-          !costPrice ||
-          !sellingPrice ||
-          !unit ||
-          !location ||
-          !expiryDate ||
-          !manufactureDate ||
-          !batchNumber ||
-          !status ||
-          !imageFile ||
-          !tags
-        ) {
-          return alert('All fields are required.');
+        if (modalMode === 'add') {
+          if (
+            !name ||
+            !description ||
+            !category ||
+            !brand ||
+            !costPrice ||
+            !sellingPrice ||
+            !unit ||
+            !location ||
+            !expiryDate ||
+            !manufactureDate ||
+            !batchNumber ||
+            !status ||
+            !imageFile ||
+            !tags
+          ) {
+            return alert('All fields are required.');
+          }
+        } else if (modalMode === 'edit') {
+          if (
+            !name ||
+            !description ||
+            !category ||
+            !brand ||
+            !costPrice ||
+            !sellingPrice ||
+            !unit ||
+            !location ||
+            !expiryDate ||
+            !manufactureDate ||
+            !batchNumber ||
+            !status ||
+            !tags
+          ) {
+            return alert('All fields are required.');
+          }
         }
 
         // Use FormData for file + text data
@@ -854,7 +878,22 @@
           }
         } else if (modalMode === 'edit' && editIndex !== null) {
           const product = products[editIndex];
-          const result = await editproduct(product._id, formData); // Pass FormData
+          const payload = {
+            name,
+            description,
+            category,
+            brand,
+            costPrice,
+            sellingPrice,
+            unit,
+            location,
+            expiryDate,
+            manufactureDate,
+            batchNumber,
+            status,
+            tags: JSON.stringify(tags.split(',').map((t) => t.trim())),
+          };
+          const result = await editProduct(product._id, payload);
 
           if (result.status === 201) {
             showToast('Product Updated');

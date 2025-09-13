@@ -89,6 +89,102 @@ const addProduct = async (req, res) => {
   }
 };
 
+const editProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userEmail = req.userEmail;
+    const {
+      name,
+      description,
+      category,
+      brand,
+      costPrice,
+      sellingPrice,
+      unit,
+      location,
+      expiryDate,
+      manufactureDate,
+      batchNumber,
+      status,
+      tags,
+      // image, // Don't update image for now
+    } = req.body;
+
+    if (
+      !id ||
+      !name ||
+      !description ||
+      !category ||
+      !brand ||
+      !costPrice ||
+      !sellingPrice ||
+      !unit ||
+      !location ||
+      !expiryDate ||
+      !manufactureDate ||
+      !batchNumber ||
+      !status ||
+      !tags
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields except image are required.',
+      });
+    }
+
+    // Find the product
+    const oldProduct = await productCollection.findOne({
+      _id: id,
+      email: userEmail,
+    });
+
+    if (!oldProduct) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found or unauthorized.',
+      });
+    }
+
+    // Update fields (do not update image)
+    oldProduct.name = name;
+    oldProduct.description = description;
+    oldProduct.category = category;
+    oldProduct.brand = brand;
+    oldProduct.costPrice = costPrice;
+    oldProduct.sellingPrice = sellingPrice;
+    oldProduct.unit = unit;
+    oldProduct.location = location;
+    oldProduct.expiryDate = expiryDate;
+    oldProduct.manufactureDate = manufactureDate;
+    oldProduct.batchNumber = batchNumber;
+    oldProduct.status = status;
+    oldProduct.tags = tags;
+
+    await oldProduct.save();
+
+    productLogAction(
+      userEmail,
+      'Product',
+      'Updated',
+      `Product '${oldProduct.name}' updated.`
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: 'Product updated successfully.',
+      data: {
+        product: oldProduct,
+      },
+    });
+  } catch (error) {
+    console.error('EditProduct Error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+    });
+  }
+};
+
 const getProducts = async (req, res) => {
   try {
     const userEmail = req.userEmail;
@@ -165,4 +261,4 @@ const deleteProduct = async (req, res) => {
     });
   }
 };
-module.exports = { addProduct, getProducts, deleteProduct };
+module.exports = { addProduct, getProducts, deleteProduct, editProduct };

@@ -186,6 +186,23 @@ async function addProduct(formData) {
   };
 }
 
+async function editProduct(id, data) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/product/edit-product/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await res.json();
+  return {
+    status: res.status,
+    data: result,
+  };
+}
+
 async function getProducts(filter = {}) {
   const token = localStorage.getItem('stockOverFlow');
 
