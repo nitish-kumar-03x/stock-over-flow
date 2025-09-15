@@ -1,129 +1,169 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Dashboard - SOF</title>
-    <link rel="stylesheet" href="../styles/main.css" />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        /* background: linear-gradient(120deg, #ffb22c 0%, #854836 100%); */
-        min-height: 100vh;
-        font-family: 'Segoe UI', Arial, sans-serif;
-      }
-      .dashboard-container {
-        max-width: 1300px;
-        margin: 0 auto;
-        padding: 2.2rem 1rem;
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
-      }
-      .dashboard-welcome {
-        font-size: 1.17rem;
-        color: #fff;
-        margin-bottom: 1.7rem;
-      }
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - SOF</title>
+  <link rel="stylesheet" href="../styles/main.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      /* background: linear-gradient(120deg, #ffb22c 0%, #854836 100%); */
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .dashboard-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2.2rem 1rem;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(133, 72, 54, 0.06);
+    }
+
+    .dashboard-welcome {
+      font-size: 1.17rem;
+      color: #fff;
+      margin-bottom: 1.7rem;
+    }
+
+    .dashboard-summary {
+      display: flex;
+      gap: 2.3rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.2rem;
+    }
+
+    .dashboard-card {
+      flex: 1 1 185px;
+      background: #fff8ef;
+      border-radius: 12px;
+      border: 2px solid #ffb22c;
+      box-shadow: 0 2px 10px rgba(133, 72, 54, 0.05);
+      padding: 1.25rem 1.2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .dashboard-card-title {
+      color: #854836;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .dashboard-card-value {
+      font-size: 1.5rem;
+      color: #ffb22c;
+      font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
       .dashboard-summary {
-        display: flex;
-        gap: 2.3rem;
-        flex-wrap: wrap;
-        margin-bottom: 2.2rem;
+        flex-direction: column;
       }
-      .dashboard-card {
-        flex: 1 1 185px;
-        background: #fff8ef;
-        border-radius: 12px;
-        border: 2px solid #ffb22c;
-        box-shadow: 0 2px 10px rgba(133, 72, 54, 0.05);
-        padding: 1.25rem 1.2rem;
-        text-align: center;
-        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .dashboard-container {
+        padding: 1rem 0.2rem;
       }
-      .dashboard-card-title {
-        color: #854836;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
-      }
-      .dashboard-card-value {
-        font-size: 1.5rem;
-        color: #ffb22c;
-        font-weight: bold;
-      }
-      @media (max-width: 900px) {
-        .dashboard-summary {
-          flex-direction: column;
-        }
-      }
-      @media (max-width: 600px) {
-        .dashboard-container {
-          padding: 1rem 0.2rem;
-        }
-      }
-    </style>
-    <script defer src="../scripts/api.js"></script>
-    <script defer src="../scripts/common.js"></script>
-  </head>
-  <body>
-    <div id="navbar-private"></div>
-    <div class="s-nav">
-      <div>
-        <h1 class="s-nav-title">Dashboard</h1>
+    }
+  </style>
+  <script defer src="../scripts/api.js"></script>
+  <script defer src="../scripts/common.js"></script>
+</head>
+
+<body>
+  <div id="navbar-private"></div>
+  <div class="s-nav">
+    <div>
+      <h1 class="s-nav-title">Dashboard</h1>
+    </div>
+    <div>
+      <span id="userState">State </span>
+      <span>,</span>
+      <span id="userCountry">Country</span>
+    </div>
+    <div class="d-flex align-center">
+      <h5>Welcome &nbsp;</h5>
+      <h3 id="userTitle">User</h3>
+      <img src="../assets/user-icon.jpg" alt="userImg" />
+    </div>
+  </div>
+  <div class="b-content">
+    <div class="dashboard-summary" id="dashboard-summary">
+      <div class="dashboard-card">
+        <div class="dashboard-card-title">Total Products</div>
+        <div class="dashboard-card-value" id="products-count">20</div>
       </div>
-      <div>
-        <span id="userState">State </span>
-        <span>,</span>
-        <span id="userCountry">Country</span>
+      <div class="dashboard-card">
+        <div class="dashboard-card-title">Categories</div>
+        <div class="dashboard-card-value" id="categories-count">07</div>
       </div>
-      <div class="d-flex align-center">
-        <h5>Welcome &nbsp;</h5>
-        <h3 id="userTitle">User</h3>
-        <img src="../assets/user-icon.jpg" alt="userImg" />
+      <div class="dashboard-card">
+        <div class="dashboard-card-title">Orders</div>
+        <div class="dashboard-card-value" id="suppliers-count">456</div>
       </div>
     </div>
-    <div class="b-content">
-      <div class="dashboard-summary" id="dashboard-summary">
-        <div class="dashboard-card">
-          <div class="dashboard-card-title">Total Products</div>
-          <div class="dashboard-card-value" id="products-count">20</div>
+    <div>
+      <h2 style="color: #854836; margin-top: 1.8rem">Reports</h2>
+      <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <div
+          style="flex: 1 1 220px; background: #fff8ef; border-radius: 12px; border: 2px solid #ffb22c; box-shadow: 0 2px 10px rgba(133, 72, 54, 0.05); padding: 1.2rem; display: flex; flex-direction: column; align-items: flex-start;">
+          <div style="display: flex; align-items: center; margin-bottom: 0.7rem;">
+            <span style="font-size: 1.7rem; margin-right: 0.7rem;">📉</span>
+            <span style="font-weight: 600; color: #854836;">Monthly Out of Stock</span>
+          </div>
+          <div style="color: #854836; opacity: 0.92; margin-bottom: 1rem;">
+            View which products ran out of stock this month.
+          </div>
+          <button
+            style="background: #ffb22c; color: #854836; border: none; border-radius: 6px; padding: 0.5rem 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">View
+            Report</button>
         </div>
-        <div class="dashboard-card">
-          <div class="dashboard-card-title">Categories</div>
-          <div class="dashboard-card-value" id="categories-count">07</div>
+        <div
+          style="flex: 1 1 220px; background: #fff8ef; border-radius: 12px; border: 2px solid #ffb22c; box-shadow: 0 2px 10px rgba(133, 72, 54, 0.05); padding: 1.2rem; display: flex; flex-direction: column; align-items: flex-start;">
+          <div style="display: flex; align-items: center; margin-bottom: 0.7rem;">
+            <span style="font-size: 1.7rem; margin-right: 0.7rem;">📈</span>
+            <span style="font-weight: 600; color: #854836;">Monthly Sales</span>
+          </div>
+          <div style="color: #854836; opacity: 0.92; margin-bottom: 1rem;">
+            Analyze your sales performance for the month.
+          </div>
+          <button
+            style="background: #ffb22c; color: #854836; border: none; border-radius: 6px; padding: 0.5rem 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;">View
+            Report</button>
         </div>
-        <div class="dashboard-card">
-          <div class="dashboard-card-title">Orders</div>
-          <div class="dashboard-card-value" id="suppliers-count">456</div>
-        </div>
-        <div class="dashboard-card">
-          <div class="dashboard-card-title">Transactions</div>
-          <div class="dashboard-card-value" id="transactions-count">230</div>
-        </div>
-      </div>
-      <div>
-        <h2 style="color: #854836; margin-top: 1.8rem">Recent Activity</h2>
-        <ul style="color: #854836; opacity: 0.92">
-          <li>Sample: Added new product "Wireless Mouse".</li>
-          <li>Sample: Updated stock for "Lenovo Laptop".</li>
-          <li>Sample: Added new product "Wireless Mouse".</li>
-          <li>Sample: Updated stock for "Lenovo Laptop".</li>
-        </ul>
       </div>
     </div>
-    <script>
-      async function fetchUser() {
-        const result = await getUser();
-        document.getElementById('userTitle').innerHTML =
-          result.data.data.user.name;
-        document.getElementById('userState').innerHTML =
-          result.data.data.user.state_town;
-        document.getElementById('userCountry').innerHTML =
-          result.data.data.user.country;
-      }
-      document.addEventListener('DOMContentLoaded', () => {
-        fetchUser();
-      });
-    </script>
-  </body>
+    <div>
+      <h2 style="color: #854836; margin-top: 1.8rem">Recent Activity</h2>
+      <ul style="color: #854836; opacity: 0.92">
+        <li>Sample: Added new product "Wireless Mouse".</li>
+        <li>Sample: Updated stock for "Lenovo Laptop".</li>
+        <li>Sample: Added new product "Wireless Mouse".</li>
+        <li>Sample: Updated stock for "Lenovo Laptop".</li>
+        <li>Sample: Updated stock for "Lenovo Laptop".</li>
+        <li>Sample: Updated stock for "Lenovo Laptop".</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    async function fetchUser() {
+      const result = await getUser();
+      document.getElementById('userTitle').innerHTML =
+        result.data.data.user.name;
+      document.getElementById('userState').innerHTML =
+        result.data.data.user.state_town;
+      document.getElementById('userCountry').innerHTML =
+        result.data.data.user.country;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchUser();
+    });
+  </script>
+</body>
+
 </html>
