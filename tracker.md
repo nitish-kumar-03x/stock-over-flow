@@ -1,5 +1,5 @@
 // Outcomes
-CRUD, REST APIs, Authentication, Image Handling, OAuth, Data Filteration
+CRUD, REST APIs, Authentication, Image Handling, OAuth, Data Filteration, Export Excel
 
 // Pending
 Orders Items
