@@ -7,7 +7,7 @@ const productRouter = require('./routes/productRoute');
 require('dotenv').config();
 
 const connectMongoDB = require('./config/mongodb');
-const mysqlPool = require('./config/mysql');
+const { sequelize } = require('./config/mysql');
 
 const app = express();
 app.use(express.json());
@@ -24,25 +24,20 @@ app.use('/api/auth', authRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/product', productRouter);
 
-// Connect to MongoDB and start server
-connectMongoDB()
-  .then(() => {
-    // Test MySQL connection (optional, since pool already connects)
-    mysqlPool.getConnection((err, connection) => {
-      if (err) {
-        console.error('MySQL connection error:', err);
-        process.exit(1);
-      } else {
-        console.log('MySQL pool is ready');
-        connection.release();
+const startServer = async () => {
+  try {
+    await connectMongoDB();
 
-        app.listen(PORT, () => {
-          console.log(`Server is listening at http://${HOST}:${PORT}`);
-        });
-      }
+    await sequelize.authenticate();
+    console.log('MySQL connection has been established successfully.');
+
+    app.listen(PORT, () => {
+      console.log(`Server is listening at http://${HOST}:${PORT}`);
     });
-  })
-  .catch((error) => {
-    console.error('Failed to connect to MongoDB:', error);
+  } catch (error) {
+    console.error('Failed to start server:', error);
     process.exit(1);
-  });
+  }
+};
+
+startServer();

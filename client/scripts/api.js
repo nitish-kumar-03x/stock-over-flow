@@ -212,13 +212,16 @@ async function getProducts(filter = {}) {
     if (filter[key]) params.append(key, filter[key]);
   }
 
-  const res = await fetch(`${API_BASE}/product/get-products?${params.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      token: token,
+  const res = await fetch(
+    `${API_BASE}/product/get-products?${params.toString()}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        token: token,
+      },
     }
-  });
+  );
   const data = await res.json();
 
   return {
@@ -226,7 +229,6 @@ async function getProducts(filter = {}) {
     data,
   };
 }
-
 
 async function deleteProduct(id) {
   const token = localStorage.getItem('stockOverFlow');

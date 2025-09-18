@@ -10,7 +10,10 @@ const imageFileFilter = (req, file, cb) => {
   if (allowedTypes.test(ext) && allowedTypes.test(mime)) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files (jpg, jpeg, png, webp, gif) are allowed!'), false);
+    cb(
+      new Error('Only image files (jpg, jpeg, png, webp, gif) are allowed!'),
+      false
+    );
   }
 };
 
@@ -20,11 +23,11 @@ const upload = multer({
 });
 
 const uploadProductMiddleware = (req, res, next) => {
-  upload.single("image")(req, res, (err) => {
+  upload.single('image')(req, res, (err) => {
     if (err) {
       return res.status(400).json({
         success: false,
-        message: "File upload error",
+        message: 'File upload error',
         error: err.message,
       });
     }
@@ -32,18 +35,19 @@ const uploadProductMiddleware = (req, res, next) => {
     if (!req.file) {
       return res.status(400).json({
         success: false,
-        message: "Image file is required and must be jpg, jpeg, png, webp, or gif.",
+        message:
+          'Image file is required and must be jpg, jpeg, png, webp, or gif.',
       });
     }
 
     // upload file buffer to cloudinary
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "products" },
+      { folder: 'products' },
       (error, result) => {
         if (error) {
           return res.status(500).json({
             success: false,
-            message: "Cloudinary upload failed",
+            message: 'Cloudinary upload failed',
             error: error.message,
           });
         }

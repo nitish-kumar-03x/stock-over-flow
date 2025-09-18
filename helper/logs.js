@@ -1,57 +1,54 @@
-const mysqlPool = require('../config/mysql');
+const { sequelize } = require('../config/mysql');
 
-const authLogAction = (
+const logAction = async (
+  table,
   email,
   collection,
   action,
-  description = null,
-  comments = null
+  description = '',
+  comments = ''
 ) => {
-  mysqlPool.query(
-    'INSERT INTO `stock-over-flow-auth-logs` (email, collection, action, description, comments) VALUES (?, ?, ?, ?, ?)',
-    [email, collection, action, description, comments],
-    (err) => {
-      if (err) {
-        console.error('Failed to log action:', err);
+  try {
+    await sequelize.query(
+      `INSERT INTO \`${table}\` (email, collection, action, description, comments, timestamp) 
+       VALUES (?, ?, ?, ?, ?, NOW())`,
+      {
+        replacements: [email, collection, action, description, comments],
       }
-    }
-  );
+    );
+  } catch (err) {
+    console.error(`Log error (${table}):`, err.message);
+  }
 };
 
-const categoryLogAction = (
-  email,
-  collection,
-  action,
-  description = null,
-  comments = null
-) => {
-  mysqlPool.query(
-    'INSERT INTO `stock-over-flow-category-logs` (email, collection, action, description, comments) VALUES (?, ?, ?, ?, ?)',
-    [email, collection, action, description, comments],
-    (err) => {
-      if (err) {
-        console.error('Failed to log action:', err);
-      }
-    }
+const authLogAction = (email, collection, action, description, comments) =>
+  logAction(
+    'stock-over-flow-auth-logs',
+    email,
+    collection,
+    action,
+    description,
+    comments
   );
-};
 
-const productLogAction = (
-  email,
-  collection,
-  action,
-  description = null,
-  comments = null
-) => {
-  mysqlPool.query(
-    'INSERT INTO `stock-over-flow-product-logs` (email, collection, action, description, comments) VALUES (?, ?, ?, ?, ?)',
-    [email, collection, action, description, comments],
-    (err) => {
-      if (err) {
-        console.error('Failed to log action:', err);
-      }
-    }
+const categoryLogAction = (email, collection, action, description, comments) =>
+  logAction(
+    'stock-over-flow-category-logs',
+    email,
+    collection,
+    action,
+    description,
+    comments
   );
-};
+
+const productLogAction = (email, collection, action, description, comments) =>
+  logAction(
+    'stock-over-flow-product-logs',
+    email,
+    collection,
+    action,
+    description,
+    comments
+  );
 
 module.exports = { authLogAction, categoryLogAction, productLogAction };
