@@ -9,7 +9,7 @@ const {uploadProductMiddleware} = require('../middlewares/uploadMiddleware');
 const productRouter = express.Router();
 
 productRouter.post('/add-product', authMiddleware,uploadProductMiddleware, addProduct);
-productRouter.post('/edit-product', authMiddleware, editProduct);
+productRouter.put('/edit-product/:id', authMiddleware, editProduct);
 productRouter.get('/get-products', authMiddleware, getProducts);
 productRouter.delete('/delete-product/:id', authMiddleware, deleteProduct);
 
