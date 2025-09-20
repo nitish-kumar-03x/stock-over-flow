@@ -1,4 +1,6 @@
 const productCollection = require('../models/productModel');
+const stockCollection = require('../models/stockModel');
+
 const { productLogAction } = require('../helper/logs');
 
 const addProduct = async (req, res) => {
@@ -73,6 +75,12 @@ const addProduct = async (req, res) => {
     });
 
     await newProduct.save();
+    const newStock = await new stockCollection({
+      productId : newProduct._id,
+      email : userEmail,
+      quantity : 0
+    }) 
+    await newStock.save();
     productLogAction(userEmail, 'Product', 'Add', `Product '${name}' added.`);
 
     return res.status(201).json({

@@ -245,3 +245,20 @@ async function deleteProduct(id) {
     data,
   };
 }
+
+async function createOrder(payload) {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(`${API_BASE}/order/create-order`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  return {
+    status: res.status,
+    data,
+  };
+}

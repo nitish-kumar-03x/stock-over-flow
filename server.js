@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const authRouter = require('./routes/authRoute');
 const categoryRouter = require('./routes/categoryRoute');
 const productRouter = require('./routes/productRoute');
+const orderRouter = require('./routes/orderRoute');
+
 require('dotenv').config();
 
 const connectMongoDB = require('./config/mongodb');
@@ -23,6 +25,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/product', productRouter);
+app.use('/api/order', orderRouter);
 
 const startServer = async () => {
   try {
