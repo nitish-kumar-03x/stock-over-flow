@@ -262,3 +262,26 @@ async function createOrder(payload) {
     data,
   };
 }
+
+async function getOrders(filter = {}) {
+  const token = localStorage.getItem('stockOverFlow');
+  const params = new URLSearchParams();
+  for (const key in filter) {
+    if (filter[key] !== undefined && filter[key] !== '') {
+      params.append(key, filter[key]);
+    }
+  }
+
+  const res = await fetch(`${API_BASE}/order/get-orders?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      token: token,
+    },
+  });
+  const data = await res.json();
+  return {
+    status: res.status,
+    data,
+  };
+}

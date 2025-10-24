@@ -391,6 +391,15 @@
         }
       }
 
+      async function fetchOrders(filter = {}) {
+        const result = await getOrders(filter);
+        if (result.status === 201 && Array.isArray(result.data?.data)) {
+          orders = result.data.data;
+        } else {
+          orders = [];
+        }
+      }
+
       function clearOrderFilters() {
         document.getElementById('filter-product').value = '';
         document.getElementById('filter-type').value = '';
@@ -420,11 +429,11 @@
           return;
         }
         filteredOrders.forEach((order, idx) => {
-          const prod = products.find((p) => p._id === order.productId);
+         
           tbody.innerHTML += `
           <tr>
             <td>${idx + 1}</td>
-            <td>${prod ? prod.name : '-'}</td>
+            <td>${order.productName }</td>
             <td>${order.type.charAt(0).toUpperCase() + order.type.slice(1)}</td>
             <td>${order.quantity}</td>
             <td>₹${order.price}</td>
@@ -504,7 +513,8 @@
 
       async function submitOrder() {
         const productId = document.getElementById('order-product-input').value;
-        const productName = products.find(p => p._id === productId)?.name || '';        
+        const productName =
+          products.find((p) => p._id === productId)?.name || '';
         const type = document.getElementById('order-type-input').value;
         const quantity = document.getElementById('order-quantity-input').value;
         const price = document.getElementById('order-price-input').value;
@@ -562,6 +572,7 @@
 
       document.addEventListener('DOMContentLoaded', async () => {
         await populateFilterProductsDropdown();
+        await fetchOrders();
         renderOrderList();
       });
     </script>
