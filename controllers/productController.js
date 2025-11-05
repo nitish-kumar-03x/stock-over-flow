@@ -213,11 +213,24 @@ const getProducts = async (req, res) => {
       .find(filter)
       .sort({ createdAt: -1 });
 
+    // Fetch quantities for all products from stockCollection
+    const productIds = products.map(p => p._id);
+    const stocks = await stockCollection.find({ productId: { $in: productIds }, email: userEmail });
+    const stockMap = {};
+    stocks.forEach(s => { stockMap[s.productId.toString()] = s.quantity; });
+
+    // Attach quantity to each product
+    const productsWithQty = products.map(p => {
+      const obj = p.toObject ? p.toObject() : p;
+      obj.quantity = stockMap[p._id.toString()] || 0;
+      return obj;
+    });
+
     return res.status(201).json({
       success: true,
-      message: 'Products Fetched successfully.',
+      message: 'Products Fetched.',
       data: {
-        products,
+        products: productsWithQty,
       },
     });
   } catch (error) {

@@ -95,15 +95,15 @@
       <div class="dashboard-summary" id="dashboard-summary">
         <div class="dashboard-card">
           <div class="dashboard-card-title">Total Products</div>
-          <div class="dashboard-card-value" id="products-count">20</div>
+          <div class="dashboard-card-value" id="products-count">...</div>
         </div>
         <div class="dashboard-card">
           <div class="dashboard-card-title">Categories</div>
-          <div class="dashboard-card-value" id="categories-count">07</div>
+          <div class="dashboard-card-value" id="categories-count">...</div>
         </div>
         <div class="dashboard-card">
           <div class="dashboard-card-title">Orders</div>
-          <div class="dashboard-card-value" id="suppliers-count">456</div>
+          <div class="dashboard-card-value" id="orders-count">...</div>
         </div>
       </div>
       <div>
@@ -198,28 +198,69 @@
       </div>
       <div>
         <h2 style="color: #854836; margin-top: 1.8rem">Recent Activity</h2>
-        <ul style="color: #854836; opacity: 0.92">
-          <li>Sample: Added new product "Wireless Mouse".</li>
-          <li>Sample: Updated stock for "Lenovo Laptop".</li>
-          <li>Sample: Added new product "Wireless Mouse".</li>
-          <li>Sample: Updated stock for "Lenovo Laptop".</li>
-          <li>Sample: Updated stock for "Lenovo Laptop".</li>
-          <li>Sample: Updated stock for "Lenovo Laptop".</li>
+        <ul style="color: #854836; opacity: 0.92" id="recent-activity-list">
+          <li>Loading...</li>
         </ul>
       </div>
     </div>
     <script>
       async function fetchUser() {
         const result = await getUser();
-        document.getElementById('userTitle').innerHTML =
-          result.data.data.user.name;
-        document.getElementById('userState').innerHTML =
-          result.data.data.user.state_town;
-        document.getElementById('userCountry').innerHTML =
-          result.data.data.user.country;
+        if (result.status === 200 || result.status === 201) {
+          document.getElementById('userTitle').textContent = result.data.data.user.name;
+          document.getElementById('userState').textContent = result.data.data.user.state_town;
+          document.getElementById('userCountry').textContent = result.data.data.user.country;
+        }
       }
-      document.addEventListener('DOMContentLoaded', () => {
-        fetchUser();
+
+      async function fetchDashboardStats() {
+        // Products
+        const productsRes = await getProducts();
+        document.getElementById('products-count').textContent =
+          productsRes.status === 201 && productsRes.data?.data?.products ? productsRes.data.data.products.length : '0';
+        // Categories
+        const categoriesRes = await getCategories();
+        document.getElementById('categories-count').textContent =
+          categoriesRes.status === 201 && Array.isArray(categoriesRes.data?.data?.categories) ? categoriesRes.data.data.categories.length : '0';
+        // Orders
+        const ordersRes = await getOrders();
+        document.getElementById('orders-count').textContent =
+          ordersRes.status === 201 && Array.isArray(ordersRes.data?.data) ? ordersRes.data.data.length : '0';
+      }
+
+      async function fetchRecentActivity() {
+        // For demo, show last 5 orders
+        const ordersRes = await getOrders();
+        const ul = document.getElementById('recent-activity-list');
+        ul.innerHTML = '';
+        if (ordersRes.status === 201 && Array.isArray(ordersRes.data?.data)) {
+          const orders = ordersRes.data.data.slice(0, 5);
+          if (orders.length === 0) {
+            ul.innerHTML = '<li>No recent activity.</li>';
+          } else {
+            orders.forEach(o => {
+              ul.innerHTML += `<li>${o.type === 'purchase' ? 'Purchased' : 'Sold'} ${o.quantity} of <b>${o.productName}</b> on ${formatDateDMY(o.date)}</li>`;
+            });
+          }
+        } else {
+          ul.innerHTML = '<li>Failed to load activity.</li>';
+        }
+      }
+
+      function formatDateDMY(dateStr) {
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        if (isNaN(d)) return '-';
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        await fetchUser();
+        await fetchDashboardStats();
+        await fetchRecentActivity();
       });
     </script>
   </body>

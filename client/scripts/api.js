@@ -248,7 +248,7 @@ async function deleteProduct(id) {
 
 async function createOrder(payload) {
   const token = localStorage.getItem('stockOverFlow');
-  const res = await fetch(`${API_BASE}/order/create-order`, {
+  const res = await fetch(`${API_BASE}/order/create-order/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -257,10 +257,51 @@ async function createOrder(payload) {
     body: JSON.stringify(payload),
   });
   const data = await res.json();
+  if (data && data.success === false && typeof showToast === 'function') {
+    showToast(data.message || 'Operation failed');
+  }
   return {
     status: res.status,
     data,
   };
+}
+
+async function updateOrder(orderId, payload) {
+  const token = localStorage.getItem('stockOverFlow');
+  try {
+    const res = await fetch(`${API_BASE}/order/update-order/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        token: token,
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data && data.success === false && typeof showToast === 'function') {
+      showToast(data.message || 'Operation failed');
+    }
+    return { status: res.status, data };
+  } catch (e) {
+    return { status: 500, data: { message: 'Error updating order' } };
+  }
+}
+
+async function deleteOrderApi(orderId) {
+  const token = localStorage.getItem('stockOverFlow');
+  try {
+    const res = await fetch(`${API_BASE}/order/delete-order/${orderId}`, {
+      method: 'DELETE',
+      headers: { token: token }
+    });
+    const data = await res.json();
+    if (data && data.success === false && typeof showToast === 'function') {
+      showToast(data.message || 'Operation failed');
+    }
+    return { status: res.status, data };
+  } catch (e) {
+    return { status: 500, data: { message: 'Error deleting order' } };
+  }
 }
 
 async function getOrders(filter = {}) {
