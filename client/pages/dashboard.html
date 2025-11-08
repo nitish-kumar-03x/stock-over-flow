@@ -72,6 +72,7 @@
     </style>
     <script defer src="../scripts/api.js"></script>
     <script defer src="../scripts/common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   </head>
 
   <body>
@@ -133,12 +134,10 @@
               style="display: flex; align-items: center; margin-bottom: 0.7rem"
             >
               <span style="font-size: 1.7rem; margin-right: 0.7rem">📉</span>
-              <span style="font-weight: 600; color: #854836"
-                >Monthly Out of Stock</span
-              >
+              <span style="font-weight: 600; color: #854836">Out of Stock</span>
             </div>
             <div style="color: #854836; opacity: 0.92; margin-bottom: 1rem">
-              View which products ran out of stock this month.
+              View which products ran out of stock now.
             </div>
             <button
               style="
@@ -151,8 +150,9 @@
                 cursor: pointer;
                 transition: background 0.2s;
               "
+              id="out-of-stock-view-btn"
             >
-              View Report
+              Download Report
             </button>
           </div>
           <div
@@ -173,11 +173,11 @@
             >
               <span style="font-size: 1.7rem; margin-right: 0.7rem">📈</span>
               <span style="font-weight: 600; color: #854836"
-                >Monthly Sales</span
+                >Sales Report</span
               >
             </div>
             <div style="color: #854836; opacity: 0.92; margin-bottom: 1rem">
-              Analyze your sales performance for the month.
+              Analyze your sales performance.
             </div>
             <button
               style="
@@ -207,9 +207,12 @@
       async function fetchUser() {
         const result = await getUser();
         if (result.status === 200 || result.status === 201) {
-          document.getElementById('userTitle').textContent = result.data.data.user.name;
-          document.getElementById('userState').textContent = result.data.data.user.state_town;
-          document.getElementById('userCountry').textContent = result.data.data.user.country;
+          document.getElementById('userTitle').textContent =
+            result.data.data.user.name;
+          document.getElementById('userState').textContent =
+            result.data.data.user.state_town;
+          document.getElementById('userCountry').textContent =
+            result.data.data.user.country;
         }
       }
 
@@ -217,15 +220,22 @@
         // Products
         const productsRes = await getProducts();
         document.getElementById('products-count').textContent =
-          productsRes.status === 201 && productsRes.data?.data?.products ? productsRes.data.data.products.length : '0';
+          productsRes.status === 201 && productsRes.data?.data?.products
+            ? productsRes.data.data.products.length
+            : '0';
         // Categories
         const categoriesRes = await getCategories();
         document.getElementById('categories-count').textContent =
-          categoriesRes.status === 201 && Array.isArray(categoriesRes.data?.data?.categories) ? categoriesRes.data.data.categories.length : '0';
+          categoriesRes.status === 201 &&
+          Array.isArray(categoriesRes.data?.data?.categories)
+            ? categoriesRes.data.data.categories.length
+            : '0';
         // Orders
         const ordersRes = await getOrders();
         document.getElementById('orders-count').textContent =
-          ordersRes.status === 201 && Array.isArray(ordersRes.data?.data) ? ordersRes.data.data.length : '0';
+          ordersRes.status === 201 && Array.isArray(ordersRes.data?.data)
+            ? ordersRes.data.data.length
+            : '0';
       }
 
       async function fetchRecentActivity() {
@@ -238,7 +248,7 @@
           if (orders.length === 0) {
             ul.innerHTML = '<li>No recent activity.</li>';
           } else {
-            orders.forEach(o => {
+            orders.forEach((o) => {
               ul.innerHTML += `<li>${o.type === 'purchase' ? 'Purchased' : 'Sold'} ${o.quantity} of <b>${o.productName}</b> on ${formatDateDMY(o.date)}</li>`;
             });
           }
@@ -261,6 +271,34 @@
         await fetchUser();
         await fetchDashboardStats();
         await fetchRecentActivity();
+      });
+    </script>
+    <script>
+      async function downloadOutOfStockReport() {
+        const res = await fetchOutOfStock();
+        debugger;
+        if (res.status !== 201 || !Array.isArray(res.data?.data?.products)) {
+          alert('Failed to fetch out-of-stock data.');
+          return;
+        }
+        const data = res.data.data.products;
+        const rows = [
+          ['S.No', 'Product Name', 'Brand', 'Category'],
+          ...data.map((p, i) => [i + 1, p.name, p.brand, p.category]),
+        ];
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+        XLSX.utils.book_append_sheet(wb, ws, 'Out of Stock');
+
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        XLSX.writeFile(wb, `Out of Stock ${dateStr}.xlsx`);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const viewOutOfStockReport = document.getElementById('out-of-stock-view-btn');
+        viewOutOfStockReport.addEventListener('click', downloadOutOfStockReport);
       });
     </script>
   </body>

@@ -326,3 +326,23 @@ async function getOrders(filter = {}) {
     data,
   };
 }
+
+async function fetchOutOfStock() {
+  const token = localStorage.getItem('stockOverFlow');
+  const res = await fetch(
+    `${API_BASE}/product/get-out-of-stock-report`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        token: token,
+      },
+    }
+  );
+  const data = await res.json();
+
+  return {
+    status: res.status,
+    data,
+  };
+}

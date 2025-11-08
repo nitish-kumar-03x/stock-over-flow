@@ -76,10 +76,10 @@ const addProduct = async (req, res) => {
 
     await newProduct.save();
     const newStock = await new stockCollection({
-      productId : newProduct._id,
-      email : userEmail,
-      quantity : 0
-    }) 
+      productId: newProduct._id,
+      email: userEmail,
+      quantity: 0,
+    });
     await newStock.save();
     productLogAction(userEmail, 'Product', 'Add', `Product '${name}' added.`);
 
@@ -214,13 +214,18 @@ const getProducts = async (req, res) => {
       .sort({ createdAt: -1 });
 
     // Fetch quantities for all products from stockCollection
-    const productIds = products.map(p => p._id);
-    const stocks = await stockCollection.find({ productId: { $in: productIds }, email: userEmail });
+    const productIds = products.map((p) => p._id);
+    const stocks = await stockCollection.find({
+      productId: { $in: productIds },
+      email: userEmail,
+    });
     const stockMap = {};
-    stocks.forEach(s => { stockMap[s.productId.toString()] = s.quantity; });
+    stocks.forEach((s) => {
+      stockMap[s.productId.toString()] = s.quantity;
+    });
 
     // Attach quantity to each product
-    const productsWithQty = products.map(p => {
+    const productsWithQty = products.map((p) => {
       const obj = p.toObject ? p.toObject() : p;
       obj.quantity = stockMap[p._id.toString()] || 0;
       return obj;
@@ -282,4 +287,44 @@ const deleteProduct = async (req, res) => {
     });
   }
 };
-module.exports = { addProduct, getProducts, deleteProduct, editProduct };
+
+const getOutOfStockProducts = async (req, res) => {
+  try {
+    const userEmail = req.userEmail;
+
+    const outOfStock = await stockCollection
+      .find(
+        { email: userEmail, quantity: { $lte: 0 } },
+        { productId: 1, _id: 0 }
+      )
+      .sort({ createdAt: -1 });
+    console.log(outOfStock);
+
+    const productIds = outOfStock.map((p) => p.productId);
+    const products = await productCollection.find({
+      _id: { $in: productIds },
+      email: userEmail,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Out of Stock Products Fetched.',
+      data: {
+      products,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+};
+module.exports = {
+  addProduct,
+  getProducts,
+  deleteProduct,
+  editProduct,
+  getOutOfStockProducts,
+};
